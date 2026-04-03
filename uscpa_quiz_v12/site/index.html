@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>FAR2ウォームアップクイズ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <button class="home-btn" onclick="goHome()" title="ホーム">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </button>
+      <span class="brand-badge">FAR2</span>
+      <span class="brand-name">ウォームアップクイズ</span>
+    </div>
+    <div class="header-score hidden" id="headerScore">
+      <span class="score-label">正解</span>
+      <span id="scoreCorrect">0</span>
+      <span class="score-sep">/</span>
+      <span id="scoreTotal">0</span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ══ スタート画面 ══ -->
+  <div class="screen" id="screenStart">
+    <div class="start-card">
+      <div class="start-icon">📚</div>
+      <h1 class="start-title">FAR2<br>ウォームアップクイズ</h1>
+      <p class="start-sub">USCPA対策</p>
+
+      <div class="count-badge">
+        <span id="selectedCount">0</span>問が選択中
+      </div>
+
+      <!-- 出題範囲 -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">出題範囲（Topic）</span>
+          <div class="section-actions">
+            <button class="link-btn" onclick="checkAll(true)">全選択</button>
+            <span class="link-sep">／</span>
+            <button class="link-btn" onclick="checkAll(false)">解除</button>
+          </div>
+        </div>
+        <div id="topicList"></div>
+      </section>
+
+      <!-- 難易度フィルタ（新追加） -->
+      <section class="section">
+        <div class="section-title">難易度（Difficulty）</div>
+        <div id="difficultyFilter" class="diff-filter"></div>
+      </section>
+
+      <!-- 出題モード -->
+      <section class="section">
+        <div class="section-title">出題モード</div>
+        <div class="mode-grid">
+          <button class="mode-btn active" data-mode="random">🔀 ランダム</button>
+          <button class="mode-btn" data-mode="sequential">📋 最初から</button>
+          <button class="mode-btn mode-review" data-mode="review" id="btnReview" disabled>⭐ 復習ボックス</button>
+          <button class="mode-btn mode-master" data-mode="master">🎯 マスターするまで</button>
+        </div>
+      </section>
+
+      <div class="fixed-count-info">5問ずつ出題します</div>
+
+      <div class="banner banner-review hidden" id="reviewBanner">
+        <span>⭐</span><span id="reviewText">復習ボックスに0問あります</span>
+      </div>
+
+      <button class="btn-start" id="btnStart" onclick="startQuiz()">スタート →</button>
+    </div>
+  </div>
+
+  <!-- ══ クイズ画面 ══ -->
+  <div class="screen hidden" id="screenQuiz">
+
+    <div class="progress-area">
+      <div class="progress-top">
+        <span class="q-num" id="qNum">Q1</span>
+        <span class="mode-tag" id="modeTag">ランダム</span>
+        <span class="progress-text" id="progressText">1 / 5</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="q-meta">
+      <span class="tag tag-cat" id="tagCat">vocab</span>
+      <span class="tag tag-topic" id="tagTopic">Topic</span>
+      <span class="tag tag-diff" id="tagDiff" style="display:none"></span>
+      <span class="topic-progress-badge" id="topicProgressBadge"></span>
+    </div>
+
+    <div class="q-card" id="qCard">
+      <div class="q-card-top">
+        <p class="q-text" id="qText">問題文</p>
+        <button class="tts-btn" id="ttsBtn" onclick="speak()" title="読み上げ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+      </div>
+      <label class="review-label">
+        <input type="checkbox" id="reviewCb" onchange="onReviewCbChange()">
+        <span>⭐ 復習ボックスに追加</span>
+      </label>
+    </div>
+
+    <div class="choices" id="choices"></div>
+
+    <button class="btn-skip hidden" id="btnSkip" onclick="skipQuestion()">スキップ →</button>
+
+    <div class="explanation hidden" id="explanation">
+      <div class="expl-header">
+        <span class="result-icon" id="resultIcon">✓</span>
+        <span class="result-label" id="resultLabel">正解！</span>
+      </div>
+      <p class="expl-text" id="explText"></p>
+      <p class="master-info hidden" id="masterInfo"></p>
+      <button class="btn-next" onclick="nextQuestion()">次の問題 →</button>
+    </div>
+
+  </div>
+
+  <!-- ══ 結果画面 ══ -->
+  <div class="screen hidden" id="screenResult">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <h2 class="result-title" id="resultTitle">クイズ完了！</h2>
+      <div class="result-score">
+        <span class="result-big" id="finalCorrect">0</span>
+        <span class="result-slash">/</span>
+        <span class="result-denom" id="finalTotal">0</span>
+      </div>
+      <p class="result-pct" id="resultPct">正答率 0%</p>
+      <p class="result-msg" id="resultMsg"></p>
+      <div class="result-review-info hidden" id="resultReviewInfo">
+        ⭐ <span id="resultReviewCount"></span>
+      </div>
+      <div class="result-btns" id="resultBtns"></div>
+    </div>
+  </div>
+
+</main>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
