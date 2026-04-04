@@ -4804,12 +4804,12 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
-    "question": "支払利息はいつ認識するのが正しい？",
-    "correct": "発生した期間に応じて認識",
-    "wrong1": "支払時にまとめて認識",
-    "wrong2": "期末のみ認識",
-    "wrong3": "任意の時点",
-    "explanation": "発生主義＝利息は「現金の支払時ではなく、時間の経過に応じて発生した期間」に対応させて認識する"
+    "question": "支払利息（interest expense）は通常いつ認識するのが正しい？",
+    "correct": "発生した期間に応じて認識する（recognize over the period incurred）",
+    "wrong1": "実際の支払時にまとめて認識する（recognize when paid）",
+    "wrong2": "期末にだけ認識する（recognize only at year-end）",
+    "wrong3": "任意の時点で認識する（recognize at any chosen date）",
+    "explanation": "支払利息（interest expense）は、現金の支払時ではなく、時間の経過に応じて発生した期間に対応させて認識する。これは発生主義（accrual basis）に基づく処理であり、支払日と認識時点は一致しないことがある。"
   },
   {
     "id": 2,
@@ -4828,12 +4828,12 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
-    "question": "interest expenseの基本計算式は？",
-    "correct": "元本×利率×期間",
-    "wrong1": "元本×利率",
-    "wrong2": "元本÷期間",
-    "wrong3": "利率×期間",
-    "explanation": "利息は「元本×利率×期間」で計算される（時間に応じて価値が増減するというtime value of moneyの考え方）"
+    "question": "interest 計算で最も基本となる3要素はどれか？",
+    "correct": "元本（principal）・利率（rate）・期間（time）",
+    "wrong1": "元本（principal）・現在価値（PV）・額面（FV）",
+    "wrong2": "利率（rate）・額面（FV）・割引率（discount rate）",
+    "wrong3": "期間（time）・収益（revenue）・現金（cash）",
+    "explanation": "interest の基本計算は Principal × Rate × Time である。したがって、Notes の問題では、まず何が principal・rate・time に当たるかを見極めることが重要である。"
   },
   {
     "id": 4,
@@ -4852,12 +4852,12 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
-    "question": "1年12%、元本$10,000、3ヶ月の利息はいくら？",
+    "question": "年利12%（annual rate）、元本$10,000、期間3か月（3 months）の利息はいくら？",
     "correct": "$300",
     "wrong1": "$1,200",
     "wrong2": "$100",
     "wrong3": "$900",
-    "explanation": "利息は期間按分するため、10000×12%×(3/12)で3ヶ月分のみ計算する"
+    "explanation": "interest は Principal × Rate × Time で計算する。年利12%なので、3か月分は 3/12 年として扱う。したがって、$10,000 × 12% × 3/12 = $300。"
   },
   {
     "id": 6,
@@ -4888,27 +4888,15 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "現金主義で処理した場合、費用はどうなりやすい？",
-    "correct": "過少または過大になる",
-    "wrong1": "常に正しい",
-    "wrong2": "影響なし",
-    "wrong3": "資産になる",
-    "explanation": "現金主義では期間対応ができないため、費用が過大または過少になりやすい"
+    "question": "understated interest expense とはどういう意味か？",
+    "correct": "本来計上すべきより少ない利息費用を計上している状態（interest expense is recorded too low）",
+    "wrong1": "本来計上すべきより多い利息費用を計上している状態（interest expense is recorded too high）",
+    "wrong2": "未払利息が存在しない状態（no interest payable exists）",
+    "wrong3": "すでに利息を支払済みの状態（interest has already been paid）",
+    "explanation": "understated interest expense とは、本来認識すべき金額よりも interest expense を少なく計上している状態を意味する。これは accrual basis に基づく見積りや期間配分が不足しているときに起こりうる。"
   },
   {
     "id": 9,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "understated interest expenseとはどういう意味？",
-    "correct": "利息費用の過少計上",
-    "wrong1": "過大計上",
-    "wrong2": "未払なし",
-    "wrong3": "支払済み",
-    "explanation": "understated interest expense＝本来計上すべき利息より少なく計上している状態"
-  },
-  {
-    "id": 10,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,interest,medium",
@@ -4920,7 +4908,7 @@ const QUIZ_DATA = [
     "explanation": "under = 少ない"
   },
   {
-    "id": 11,
+    "id": 10,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -4932,7 +4920,7 @@ const QUIZ_DATA = [
     "explanation": "利息は「残っている元本」に対して発生するため、残存元本で計算する"
   },
   {
-    "id": 12,
+    "id": 11,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -4944,7 +4932,7 @@ const QUIZ_DATA = [
     "explanation": "未収利息も同様に「元本×利率×期間」で計算する（まだ受け取っていないだけで発生はしている）"
   },
   {
-    "id": 13,
+    "id": 12,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -4956,55 +4944,55 @@ const QUIZ_DATA = [
     "explanation": "120000×10%で1年分の利息＝時間1年分なのでそのまま計算"
   },
   {
+    "id": 13,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,interest,important,medium",
+    "question": "元本の一部返済後、次の利息（interest）は通常どの金額を基準に計算する？",
+    "correct": "残存元本（remaining principal balance）",
+    "wrong1": "当初元本（original principal amount）",
+    "wrong2": "平均元本（average principal）",
+    "wrong3": "元本は無視する（ignore principal）",
+    "explanation": "利息（interest）は、その時点で未返済の元本残高（remaining principal balance）に対して発生する。したがって、元本の一部を返済した後は、当初元本ではなく残存元本を基準に計算する。"
+  },
+  {
     "id": 14,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
-    "question": "元本が一部返済された後の利息計算はどうする？",
-    "correct": "残存元本で計算",
-    "wrong1": "当初元本で計算",
-    "wrong2": "平均で計算",
-    "wrong3": "無視する",
-    "explanation": "元本が減ると利息の発生額も減るため、必ず残存元本で計算する"
+    "question": "期末の未収利息（interest receivable）とは何か？",
+    "correct": "まだ受け取っていないが、決算日までに発生している利息（interest accrued but not yet received）",
+    "wrong1": "将来発生する予定の利息（future interest）",
+    "wrong2": "すでに支払済みの利息（interest already paid）",
+    "wrong3": "元本の一部（part of principal）",
+    "explanation": "未収利息（interest receivable）とは、まだ現金では受け取っていないが、時間の経過により決算日までにすでに発生している利息を表す。発生主義（accrual basis）では、この金額を期末に receivable と revenue として認識する。"
   },
   {
     "id": 15,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
-    "tag": "concept,interest,important,medium",
-    "question": "期末における未収利息とは何か？",
-    "correct": "まだ受け取っていないが発生している利息",
-    "wrong1": "将来の利息",
-    "wrong2": "支払済み利息",
-    "wrong3": "元本の一部",
-    "explanation": "未収利息＝時間経過で発生済だが、まだ現金で受け取っていない利息（accrual）"
+    "tag": "concept,important,medium",
+    "question": "利息受取日（interest payment date）が年1回の場合、決算日（year-end）に通常必要となる処理は何か？",
+    "correct": "未収利息（interest receivable）の計上",
+    "wrong1": "何もしない（no entry is needed）",
+    "wrong2": "全額を翌期に繰り延べる（defer all to next period）",
+    "wrong3": "元本を修正する（adjust principal）",
+    "explanation": "利息は現金受取日ではなく、発生主義（accrual basis）に基づいて認識する。したがって、受取日が後であっても、決算日までに発生している利息は interest receivable と interest revenue を計上する必要がある。"
   },
   {
     "id": 16,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息受取日が年1回の場合、期末に何が必要？",
-    "correct": "未収利息の計上",
-    "wrong1": "何もしない",
-    "wrong2": "全額翌期",
-    "wrong3": "元本修正",
-    "explanation": "利息は発生しているため、受取日が後でも期末に未収利息を計上する必要がある"
+    "tag": "concept,interest,important,medium",
+    "question": "未収利息（interest receivable）は通常どの金額を基準に計算する？",
+    "correct": "額面金額（face value）",
+    "wrong1": "帳簿価額（carrying amount）",
+    "wrong2": "実際の受取額（cash received）",
+    "wrong3": "割引後金額（discounted amount）",
+    "explanation": "未収利息（interest receivable）は契約上の利息であるため、通常は 額面金額（face value）× 表面利率（stated rate）× 期間（time）で計算する。carrying amount や effective rate を使うのは、通常 interest revenue の計算である。"
   },
   {
     "id": 17,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,interest,important,medium",
-    "question": "未収利息（interest receivable）は何で計算する？",
-    "correct": "額面金額（face value）",
-    "wrong1": "実効金額",
-    "wrong2": "受取額",
-    "wrong3": "割引後金額",
-    "explanation": "interest receivableは契約ベースの利息なので「額面×表面利率」で計算する"
-  },
-  {
-    "id": 18,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -5016,7 +5004,7 @@ const QUIZ_DATA = [
     "explanation": "interest revenueは原則「carrying amount × effective rate」で計算する（経済実態ベース）。ただし単純なinterest-bearing noteではface × statedになることもある"
   },
   {
-    "id": 19,
+    "id": 18,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -5028,19 +5016,19 @@ const QUIZ_DATA = [
     "explanation": "loan origination feeは実質的に利回り調整の一部なので、discountとして繰延しEIRで配分する"
   },
   {
-    "id": 20,
+    "id": 19,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
-    "question": "Discount on notes receivableは何を意味する？",
-    "correct": "将来の利息収益の調整",
-    "wrong1": "現金不足",
-    "wrong2": "損失",
-    "wrong3": "負債",
-    "explanation": "discountは「将来の利息収益を調整するための差額」であり、実効利率を成立させるためのもの"
+    "question": "Discount on notes receivable は通常何を意味する？",
+    "correct": "将来の利息収益（future interest revenue）を表す差額",
+    "wrong1": "現金不足（cash shortage）",
+    "wrong2": "損失（loss）そのもの",
+    "wrong3": "負債（liability）",
+    "explanation": "Discount on notes receivable は、手形の額面金額（face value）と初回認識時の現在価値（present value）の差額を表す。この差額は interest element であり、時間の経過に応じて amortization され、将来の interest revenue として認識される。"
   },
   {
-    "id": 21,
+    "id": 20,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -5052,7 +5040,7 @@ const QUIZ_DATA = [
     "explanation": "100000×12%×1/12＝1ヶ月分のみ計算（期間按分）"
   },
   {
-    "id": 22,
+    "id": 21,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5064,19 +5052,67 @@ const QUIZ_DATA = [
     "explanation": "額面と受取額が異なる場合はdiscount/premiumがあるため、interest revenueはcarrying amount × effective rateで計算する（経済価値ベース）"
   },
   {
+    "id": 22,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,important,easy",
+    "question": "discount がある note で、interest revenue が interest receivable より大きくなりやすいのはなぜか？",
+    "correct": "discount の amortization が interest revenue に上乗せされるから",
+    "wrong1": "stated rate が必ず effective rate より高いから",
+    "wrong2": "face value が毎期増えるから",
+    "wrong3": "cash receipt が毎期変わるから",
+    "explanation": "discount がある場合、interest receivable は face value × stated rate で計算する一方、interest revenue は carrying amount × effective rate で計算する。さらに discount amortization が加わるため、interest revenue は interest receivable より大きくなりやすい。"
+  },
+  {
     "id": 23,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "Interest receivableとinterest revenueの違いは？",
-    "correct": "計算ベースが異なる",
-    "wrong1": "同じもの",
-    "wrong2": "期間が違うだけ",
-    "wrong3": "どちらも現金",
-    "explanation": "interest receivable＝face × stated（契約ベース）。interest revenue＝carrying amount × effective rate（経済ベース）"
+    "tag": "concept,important,easy",
+    "question": "premium がある note で、interest revenue が interest receivable より小さくなりやすいのはなぜか？",
+    "correct": "premium の amortization が interest receivable から差し引かれるから",
+    "wrong1": "stated rate が必ず effective rate より低いから",
+    "wrong2": "face value が毎期減るから",
+    "wrong3": "cash receipt がゼロになるから",
+    "explanation": "premium がある場合、interest receivable は契約どおり face value × stated rate で計算されるが、interest revenue は premium amortization の影響でそれより小さくなりやすい。"
   },
   {
     "id": 24,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,important,easy",
+    "question": "discount がある note の carrying amount は、時間の経過とともにどうなる？",
+    "correct": "face value に向かって増加する",
+    "wrong1": "face value に向かって減少する",
+    "wrong2": "常に同じ",
+    "wrong3": "ゼロになる",
+    "explanation": "discount がある note は、初回認識時の carrying amount が face value より低い。discount を償却していくことで、carrying amount は満期に向かって face value に近づく。"
+  },
+  {
+    "id": 25,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,important,easy",
+    "question": "interest receivable と interest revenue の違いとして正しいものはどれか？",
+    "correct": "interest receivable は契約ベース、interest revenue は経済ベースである",
+    "wrong1": "interest receivable は現金、interest revenue は負債である",
+    "wrong2": "どちらも常に同額である",
+    "wrong3": "違いは満期日だけである",
+    "explanation": "interest receivable は face value × stated rate × time に基づく契約上の未収利息であり、interest revenue は carrying amount × effective rate × time に基づく会計上の利息収益である。discount や premium があると両者は一致しないことがある。"
+  },
+  {
+    "id": 26,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,important,medium",
+    "question": "Interest receivable と interest revenue の主な違いは何か？",
+    "correct": "Interest receivable は contract basis、interest revenue は effective interest basis で計算される",
+    "wrong1": "どちらも常に同じ金額になる（always equal）",
+    "wrong2": "どちらも cash receipt を表す（both mean cash received）",
+    "wrong3": "違いは maturity date だけである（only maturity differs）",
+    "explanation": "Interest receivable は、face value × stated rate × time に基づく契約上の未収利息である。interest revenue は、carrying amount × effective interest rate × time に基づく会計上の利息収益である。したがって、discount や premium がある場合、両者は異なることがある。"
+  },
+  {
+    "id": 27,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,interest,medium",
@@ -5088,7 +5124,7 @@ const QUIZ_DATA = [
     "explanation": "fee"
   },
   {
-    "id": 25,
+    "id": 28,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,interest,medium",
@@ -5100,19 +5136,19 @@ const QUIZ_DATA = [
     "explanation": "yield = 実効"
   },
   {
-    "id": 26,
+    "id": 29,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,liability,important,medium",
-    "question": "流動負債に含まれる借入金の要素はどれ？",
-    "correct": "次期支払元本＋未払利息",
-    "wrong1": "全元本",
-    "wrong2": "利息のみ",
-    "wrong3": "元本のみ",
-    "explanation": "流動負債には「1年以内に支払う元本＋未払利息」を含める（短期負債の定義）"
+    "question": "長期借入金（long-term note payable）がある場合、流動負債（current liabilities）に含まれるのは通常どれか？",
+    "correct": "1年以内に支払う元本部分と未払利息（current portion of principal + accrued interest）",
+    "wrong1": "借入金の全元本（entire principal balance）",
+    "wrong2": "未払利息のみ（interest only）",
+    "wrong3": "元本のみ（principal only）",
+    "explanation": "long-term note payable があっても、current liabilities に含まれるのは通常、1年以内に返済予定の元本部分（current portion）と、決算日時点で発生している未払利息（accrued interest）である。"
   },
   {
-    "id": 27,
+    "id": 30,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,medium",
@@ -5124,31 +5160,31 @@ const QUIZ_DATA = [
     "explanation": "current"
   },
   {
-    "id": 28,
+    "id": 31,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "元金均等返済とは何か？",
-    "correct": "元本が毎回同じ額",
-    "wrong1": "支払総額が一定",
-    "wrong2": "利息が一定",
-    "wrong3": "期間が一定",
-    "explanation": "元金均等＝元本は毎回同じ、利息は残高に応じて減少する"
+    "question": "元金均等返済（equal principal repayment）とは何か？",
+    "correct": "毎回返済する元本額（principal repayment）が同じ",
+    "wrong1": "毎回の支払総額（total payment）が同じ",
+    "wrong2": "毎回の利息額（interest amount）が同じ",
+    "wrong3": "返済期間（repayment period）だけが同じ",
+    "explanation": "元金均等返済（equal principal repayment）では、毎回返済する元本部分（principal repayment）は一定である。一方、利息（interest）は残高（outstanding balance）に応じて計算されるため、返済が進むにつれて減少し、総支払額も通常は減っていく。"
   },
   {
-    "id": 29,
+    "id": 32,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,medium",
-    "question": "installmentとは？",
-    "correct": "分割返済",
-    "wrong1": "一括返済",
+    "question": "installment とは何か？",
+    "correct": "分割払い・分割返済",
+    "wrong1": "一括払い",
     "wrong2": "利息",
     "wrong3": "元本",
-    "explanation": "installment"
+    "explanation": "installment payment とは、金額を一度にではなく複数回に分けて支払うことをいう。Notes の文脈では、分割返済（installment repayment）を表す。"
   },
   {
-    "id": 30,
+    "id": 33,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5160,7 +5196,7 @@ const QUIZ_DATA = [
     "explanation": "流動負債は「次の1年以内に支払う部分のみ」を含める"
   },
   {
-    "id": 31,
+    "id": 34,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5172,7 +5208,7 @@ const QUIZ_DATA = [
     "explanation": "未払利息は「前回支払日から期末までの発生分」を計算する"
   },
   {
-    "id": 32,
+    "id": 35,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5184,7 +5220,7 @@ const QUIZ_DATA = [
     "explanation": "500000×6%×3/12＝3ヶ月分の利息のみ計上"
   },
   {
-    "id": 33,
+    "id": 36,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5196,31 +5232,19 @@ const QUIZ_DATA = [
     "explanation": "流動負債に含まれる利息は「すでに発生している未払利息（accrued）」のみ"
   },
   {
-    "id": 34,
+    "id": 37,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "期末時点で借入残高が$400,000、次回返済元本$200,000の場合、流動負債の元本部分はいくら？",
+    "question": "期末の借入残高（loan balance）が$400,000で、そのうち次回1年以内に返済する元本（current portion of principal）が$200,000の場合、流動負債（current liabilities）に含まれる元本部分はいくら？",
     "correct": "$200,000",
     "wrong1": "$400,000",
     "wrong2": "$0",
     "wrong3": "$600,000",
-    "explanation": "流動負債の元本は「次回返済分（1年以内）」のみ含める"
+    "explanation": "long-term note payable があっても、流動負債（current liabilities）に含める元本部分は、1年以内に返済予定の current portion of principal のみである。したがって、この場合に流動負債へ含まれる元本部分は $200,000 である。"
   },
   {
-    "id": 35,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,note,easy",
-    "question": "installmentとは？",
-    "correct": "分割払い",
-    "wrong1": "一括払い",
-    "wrong2": "前払い",
-    "wrong3": "後払い",
-    "explanation": "installment = 分割払い"
-  },
-  {
-    "id": 36,
+    "id": 38,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,easy",
@@ -5232,7 +5256,7 @@ const QUIZ_DATA = [
     "explanation": "annual installment = 毎年支払う分割払い"
   },
   {
-    "id": 37,
+    "id": 39,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,easy",
@@ -5244,7 +5268,7 @@ const QUIZ_DATA = [
     "explanation": "noninterest-bearing noteは利息が明示されていないだけで、実質的には割引計算で利息を含んでいる"
   },
   {
-    "id": 38,
+    "id": 40,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,medium",
@@ -5256,7 +5280,7 @@ const QUIZ_DATA = [
     "explanation": "prevailing rate＝市場で一般的に使われている利率（discount計算に使う）"
   },
   {
-    "id": 39,
+    "id": 41,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,measurement,medium",
@@ -5268,7 +5292,7 @@ const QUIZ_DATA = [
     "explanation": "established exchange price＝市場で成立している価格（fair value）"
   },
   {
-    "id": 40,
+    "id": 42,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
@@ -5280,7 +5304,7 @@ const QUIZ_DATA = [
     "explanation": "手形は経済価値を反映するため、公正価値（fair value）で測定する"
   },
   {
-    "id": 41,
+    "id": 43,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,medium",
@@ -5292,7 +5316,7 @@ const QUIZ_DATA = [
     "explanation": "material"
   },
   {
-    "id": 42,
+    "id": 44,
     "category": "vocab",
     "topic": "Notes Receivable and Payable",
     "tag": "english,medium",
@@ -5304,79 +5328,79 @@ const QUIZ_DATA = [
     "explanation": "cash price"
   },
   {
-    "id": 43,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,note,important,medium",
-    "question": "手形の額面と商品の時価が大きく異なる場合どうする？",
-    "correct": "時価で測定する",
-    "wrong1": "額面を使う",
-    "wrong2": "平均を取る",
-    "wrong3": "無視する",
-    "explanation": "額面と時価が大きく異なる場合、経済実態を反映するため時価で測定する"
-  },
-  {
-    "id": 44,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,note,important,medium",
-    "question": "売上はどの金額で計上する？",
-    "correct": "受け取った対価の公正価値",
-    "wrong1": "手形額面",
-    "wrong2": "利息込み",
-    "wrong3": "任意",
-    "explanation": "売上は受け取る対価の実質価値（fair value）で計上する"
-  },
-  {
     "id": 45,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
-    "question": "額面$12,000、時価$9,000の場合、売上はいくら？",
-    "correct": "$9,000",
-    "wrong1": "$12,000",
-    "wrong2": "$3,000",
-    "wrong3": "$10,500",
-    "explanation": "実際の価値は9000なので、その金額で売上を認識する（PVベース）"
+    "question": "商品販売や資産の譲渡で手形（note receivable）を受け取る場合、手形の額面金額（face amount）と取引対象の時価（fair value）が大きく異なるとき、通常どの金額で測定する？",
+    "correct": "時価（fair value）で測定する",
+    "wrong1": "額面金額（face amount）で測定する",
+    "wrong2": "両者の平均額（average of the two amounts）を使う",
+    "wrong3": "差額は無視する（ignore the difference）",
+    "explanation": "手形（note receivable）の額面金額と取引対象の時価（fair value）が大きく異なる場合、経済実態をより適切に表すため、通常は fair value を基準に測定する。face amount をそのまま使うとは限らない。"
   },
   {
     "id": 46,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
-    "question": "額面と時価の差額はどう処理する？",
-    "correct": "Discountとして処理",
-    "wrong1": "収益にする",
-    "wrong2": "費用にする",
-    "wrong3": "無視する",
-    "explanation": "差額は利息の要素なのでDiscountとして繰延し、時間に応じて収益化する"
+    "question": "手形（note receivable）を受け取って売上を計上する場合、売上は通常どの金額で認識する？",
+    "correct": "受け取った対価の公正価値（fair value of the consideration received）",
+    "wrong1": "手形の額面金額（face amount of the note）",
+    "wrong2": "利息を含めた総額（total including interest）",
+    "wrong3": "任意の金額（any amount）",
+    "explanation": "売上は、受け取る手形の額面そのものではなく、受け取った対価の公正価値（fair value）で認識する。額面と公正価値の差額がある場合、その差は通常 interest element として扱う。"
   },
   {
     "id": 47,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
-    "question": "Discount on notes receivableとは何か？",
-    "correct": "額面とPVの差額",
-    "wrong1": "利息そのもの",
-    "wrong2": "元本の一部",
-    "wrong3": "収益",
-    "explanation": "Discount＝額面と現在価値の差＝将来の利息収益の源泉"
+    "question": "商品販売の対価として、額面金額（face value）$12,000、時価（fair value / present value）$9,000 の note receivable を受け取った場合、売上（sales revenue）はいくらで認識する？",
+    "correct": "$9,000",
+    "wrong1": "$12,000",
+    "wrong2": "$3,000",
+    "wrong3": "$10,500",
+    "explanation": "売上（sales revenue）は、手形の額面金額（face value）ではなく、受け取った対価の公正価値（fair value）または現在価値（present value）で認識する。したがって、この場合の売上は $9,000 である。額面 $12,000 との差額 $3,000 は通常、discount / interest element となる。"
   },
   {
     "id": 48,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
-    "question": "なぜ額面ではなくPVを使うのか？",
-    "correct": "経済実態を反映するため",
-    "wrong1": "簡単だから",
-    "wrong2": "法律上の理由",
-    "wrong3": "任意だから",
-    "explanation": "PVを使うのは「将来のお金を現在の価値に直して、実態を正しく表すため」"
+    "question": "手形（note）の face value と present value の差額は通常どのように処理する？",
+    "correct": "Discountとして処理する（record as a discount）",
+    "wrong1": "直ちに収益にする（record immediately as revenue）",
+    "wrong2": "直ちに費用にする（record immediately as expense）",
+    "wrong3": "何も処理しない（ignore it）",
+    "explanation": "手形（note）は通常 present value で初回認識し、face value との差額は discount として処理する。この差額は interest element を表し、時間の経過に応じて interest revenue または interest expense として認識される。"
   },
   {
     "id": 49,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,note,important,medium",
+    "question": "Discount on notes receivable とは何か？",
+    "correct": "額面金額と現在価値の差額（difference between face value and present value）",
+    "wrong1": "利息そのものを表す金額（amount of interest itself）",
+    "wrong2": "元本の一部を表す金額（part of the principal amount）",
+    "wrong3": "直ちに収益として認識する金額（amount recognized immediately as revenue）",
+    "explanation": "Discount on notes receivable は、手形の額面金額（face value）と初回認識時の現在価値（present value）の差額を表す。この差額は interest element であり、時間の経過に応じて interest revenue として認識される。"
+  },
+  {
+    "id": 50,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,note,important,medium",
+    "question": "長期の note を初回認識するとき、face value ではなく present value を使う主な理由は何か？",
+    "correct": "将来受け取る金額を現在の経済価値で測定するため",
+    "wrong1": "計算を簡単にするため",
+    "wrong2": "法律で必ずそう決まっているため",
+    "wrong3": "任意に選べるため",
+    "explanation": "note の初回認識では、将来受け取る cash flow を現在の価値（present value）に割り引いて測定する。これは、money の時間価値（time value of money）を反映し、取引の経済実態をより適切に表すためである。"
+  },
+  {
+    "id": 51,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
@@ -5388,7 +5412,7 @@ const QUIZ_DATA = [
     "explanation": "600000×0.75＝将来価値を現在価値に割り引く"
   },
   {
-    "id": 50,
+    "id": 52,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
@@ -5400,19 +5424,19 @@ const QUIZ_DATA = [
     "explanation": "利息収益は時間経過で発生するため、PV（帳簿価額）に実効利率を掛けて計算する"
   },
   {
-    "id": 51,
+    "id": 53,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
-    "question": "額面$600,000、PV$450,000の場合、discountはいくら？",
+    "question": "face value $600,000、present value $450,000の場合、discountはいくら？",
     "correct": "$150,000",
     "wrong1": "$450,000",
     "wrong2": "$600,000",
     "wrong3": "$50,000",
-    "explanation": "FV−PV＝将来受取額（額面）と現在価値の差であり、この差額が利息部分（discount）になる"
+    "explanation": "note の初回認識額は通常 present value から始まり、face value との差額が discount となる。したがって、$600,000 − $450,000 = $150,000。discount は時間の経過に伴って interest revenue / interest expense に振り替えられる。"
   },
   {
-    "id": 52,
+    "id": 54,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,note,important,medium",
@@ -5424,31 +5448,31 @@ const QUIZ_DATA = [
     "explanation": "discountは時間の経過とともに利息収益として認識されるため、徐々に減少（償却）する"
   },
   {
-    "id": 53,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,interest,important,medium",
-    "question": "discountの償却は何を意味する？",
-    "correct": "利息収益の認識",
-    "wrong1": "元本の返済",
-    "wrong2": "費用の増加",
-    "wrong3": "資産の減少",
-    "explanation": "discountの償却＝時間の経過に応じて利息収益を認識すること（実質的な利息の発生）"
-  },
-  {
-    "id": 54,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,interest,important,medium",
-    "question": "effective interest methodでのinterest revenueは？",
-    "correct": "帳簿価額×市場利率",
-    "wrong1": "額面×表面利率",
-    "wrong2": "現金受取額",
-    "wrong3": "平均額",
-    "explanation": "interest revenueは実効利回りを反映するため「帳簿価額×市場利率（EIR）」で計算する"
-  },
-  {
     "id": 55,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,interest,important,medium",
+    "question": "discount の償却（amortization of discount）は通常何を意味する？",
+    "correct": "利息収益または利息費用の認識（recognition of interest revenue or interest expense）",
+    "wrong1": "元本の返済（repayment of principal）",
+    "wrong2": "費用の単純増加（simple increase in expense）",
+    "wrong3": "資産の直接減少（direct reduction of assets）",
+    "explanation": "discount は、face value と初回の carrying amount の差額であり、interest element を表す。したがって、discount の償却（amortization）は、その差額を時間の経過に応じて interest revenue または interest expense として認識していくことを意味する。"
+  },
+  {
+    "id": 56,
+    "category": "concept",
+    "topic": "Notes Receivable and Payable",
+    "tag": "concept,interest,important,medium",
+    "question": "effective interest method で interest revenue を計算するとき、通常どの式を使う？",
+    "correct": "帳簿価額（carrying amount）× 実効利率（effective interest rate, EIR）",
+    "wrong1": "額面金額（face value）× 表面利率（stated rate）",
+    "wrong2": "現金受取額（cash received）",
+    "wrong3": "平均額（average amount）",
+    "explanation": "effective interest method では、interest revenue は note の帳簿価額（carrying amount）に実効利率（effective interest rate, EIR）を掛けて計算する。face value × stated rate は通常、契約上の interest receivable または cash interest の計算に使われる。"
+  },
+  {
+    "id": 57,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,important,medium",
@@ -5460,7 +5484,7 @@ const QUIZ_DATA = [
     "explanation": "discount償却額＝interest revenue（EIR）−cash interest（stated）。差額が追加の利息収益となる"
   },
   {
-    "id": 56,
+    "id": 58,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5472,52 +5496,28 @@ const QUIZ_DATA = [
     "explanation": "discountがある場合、帳簿価額はPVからスタートし、償却により徐々に増加してFVに近づく"
   },
   {
-    "id": 57,
-    "category": "vocab",
-    "topic": "Notes Receivable and Payable",
-    "tag": "english,medium",
-    "question": "carrying amountとは？",
-    "correct": "帳簿価額",
-    "wrong1": "PV",
-    "wrong2": "FV",
-    "wrong3": "現金額",
-    "explanation": "carrying amount＝帳簿価額（初期はPV、最終的に額面に一致する）"
-  },
-  {
-    "id": 58,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "最終的な帳簿価額はどうなる？",
-    "correct": "額面と一致する",
-    "wrong1": "ゼロになる",
-    "wrong2": "変わらない",
-    "wrong3": "PVのまま",
-    "explanation": "満期時にはdiscountが全て償却され、帳簿価額は額面（face value）と一致する"
-  },
-  {
     "id": 59,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "noninterest-bearing noteの本質は？",
-    "correct": "discount付きの利息計算",
-    "wrong1": "利息なし",
-    "wrong2": "元本のみ",
-    "wrong3": "収益なし",
-    "explanation": "noninterest-bearing noteは利息が明示されていないだけで、実質的にはdiscountを通じて利息が含まれている"
+    "question": "discount がある note の最終的な帳簿価額（carrying amount）は満期時（at maturity）にどうなる？",
+    "correct": "額面金額（face value）と一致する",
+    "wrong1": "ゼロになる（becomes zero）",
+    "wrong2": "変わらない（does not change）",
+    "wrong3": "現在価値（present value）のままである",
+    "explanation": "discount がある note は、初回認識時には carrying amount が face value より低いが、時間の経過に応じて discount が amortization される。したがって、満期時（at maturity）には carrying amount は face value に一致する。"
   },
   {
     "id": 60,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息が明示されていない理由は？",
-    "correct": "額面に含まれているため",
-    "wrong1": "利息がないため",
-    "wrong2": "簡略化のため",
-    "wrong3": "税務処理",
-    "explanation": "利息が明示されていないのは、額面と現在価値の差（discount）に利息が含まれているため"
+    "question": "noninterest-bearing note の本質として最も適切なのはどれか？",
+    "correct": "discount を通じて利息（interest）が内在している手形である",
+    "wrong1": "利息がまったく存在しない手形である",
+    "wrong2": "元本（principal）だけを表す手形である",
+    "wrong3": "収益が発生しない手形である",
+    "explanation": "noninterest-bearing note は、interest が表面上は明示されていないだけで、額面金額（face value）と現在価値（present value）の差額である discount を通じて、実質的な interest element を含んでいる。"
   },
   {
     "id": 61,
@@ -5572,12 +5572,12 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "手形の額面は何を表す？",
-    "correct": "将来受取額",
-    "wrong1": "現在価値",
-    "wrong2": "利息",
-    "wrong3": "収益",
-    "explanation": "額面（face）は満期時に受け取る将来金額（FV）を表す"
+    "question": "手形の額面（face value / face amount）は通常何を表す？",
+    "correct": "満期日に受け取る将来金額（future amount collected at maturity）",
+    "wrong1": "現在価値（present value）",
+    "wrong2": "利息収益（interest revenue）",
+    "wrong3": "売上収益（sales revenue）",
+    "explanation": "手形の額面（face value / face amount）は、満期日に受け取る将来金額を表す。現在の帳簿価額（carrying amount）は present value から始まることがあっても、face value 自体は満期時の受取額を示す。"
   },
   {
     "id": 66,
@@ -5596,132 +5596,132 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountがある場合のinitial entryは？",
-    "correct": "Dr Notes receivable（face） / Dr Discount / Cr Sales（PV）",
-    "wrong1": "Dr Cash",
-    "wrong2": "Dr Expense",
-    "wrong3": "Cr Revenue",
-    "explanation": "Notes receivableは額面で計上し、Discountはcontra assetとして借方に計上する。実質価値はSales（PV）で認識する"
+    "question": "商品販売で discount のある note receivable を受け取った場合、初回認識時（initial entry）の仕訳として最も適切なのはどれか？",
+    "correct": "Dr Notes receivable（face value） / Dr Discount on notes receivable / Cr Sales（present value）",
+    "wrong1": "Dr Cash / Cr Sales",
+    "wrong2": "Dr Interest expense / Cr Notes receivable",
+    "wrong3": "Cr Revenue only",
+    "explanation": "discount のある note receivable は、Notes receivable を額面金額（face value）で計上し、その差額を Discount on notes receivable として借方に計上する。Sales は受け取る対価の現在価値（present value）で認識するため、初回仕訳は Dr Notes receivable（face value） / Dr Discount / Cr Sales（present value）となる。"
   },
   {
     "id": 68,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountは貸借対照表でどう表示される？",
-    "correct": "控除項目",
-    "wrong1": "資産",
-    "wrong2": "負債",
-    "wrong3": "収益",
-    "explanation": "discountはNotes receivableの控除項目（contra asset）として貸借対照表に表示される"
+    "question": "Discount on notes receivable は貸借対照表（balance sheet）で通常どのように表示される？",
+    "correct": "Notes receivable の控除項目（contra asset）として表示される",
+    "wrong1": "独立した資産（separate asset）として表示される",
+    "wrong2": "負債（liability）として表示される",
+    "wrong3": "収益（revenue）として表示される",
+    "explanation": "Discount on notes receivable は、Notes receivable の額面金額（face value）から差し引く控除項目（contra asset）として balance sheet に表示される。その結果、net amount が帳簿価額（carrying amount）となる。"
   },
   {
     "id": 69,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountの本質は？",
-    "correct": "将来利息の前倒し",
-    "wrong1": "損失",
-    "wrong2": "費用",
-    "wrong3": "収益",
-    "explanation": "discountは将来の利息収益を時間に応じて配分するための調整項目"
+    "question": "discount の性質として最も適切なのはどれか？",
+    "correct": "将来の利息要素（future interest element）を表す調整項目",
+    "wrong1": "損失（loss）そのもの",
+    "wrong2": "費用（expense）そのもの",
+    "wrong3": "収益（revenue）そのもの",
+    "explanation": "discount は、face value と present value の差額であり、将来の interest revenue / interest expense として時間の経過に応じて認識される interest element を表す調整項目である。"
   },
   {
     "id": 70,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息収益の認識はいつ行う？",
-    "correct": "時間の経過に応じて",
-    "wrong1": "受取時",
-    "wrong2": "期末のみ",
-    "wrong3": "任意",
-    "explanation": "利息収益は時間の経過に応じて発生するため、accrual basisで認識する"
+    "question": "利息収益（interest revenue）は通常いつ認識する？",
+    "correct": "時間の経過に応じて認識する（recognize over time）",
+    "wrong1": "現金受取時に認識する（recognize when cash is received）",
+    "wrong2": "期末にだけ認識する（recognize only at year-end）",
+    "wrong3": "任意の時点で認識する（recognize at any chosen date）",
+    "explanation": "利息収益（interest revenue）は、現金の受取時ではなく、時間の経過に応じて発生主義（accrual basis）で認識する。したがって、受取日が後であっても、期末までに発生した分は interest receivable として計上することがある。"
   },
   {
     "id": 71,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "interest revenueとcashの関係は？",
-    "correct": "一致しない場合がある",
-    "wrong1": "常に同じ",
-    "wrong2": "cashが多い",
-    "wrong3": "cashが少ない",
-    "explanation": "EIRを使うため、interest revenueとcash受取額は一致しない場合がある"
+    "question": "interest revenue と cash received の関係として最も適切なのはどれか？",
+    "correct": "discount や premium がある場合、一致しないことがある（may differ when discount or premium exists）",
+    "wrong1": "常に同じである（always equal）",
+    "wrong2": "cash のほうが常に多い（cash is always greater）",
+    "wrong3": "cash のほうが常に少ない（cash is always less）",
+    "explanation": "interest revenue は会計上、effective interest method に基づいて認識される。一方、cash received は通常、契約上の stated rate に基づく。そのため、discount または premium がある場合、interest revenue と cash received は一致しないことがある。"
   },
   {
     "id": 72,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountがある場合のcash受取は？",
-    "correct": "額面で受け取る",
-    "wrong1": "PVで受け取る",
-    "wrong2": "平均",
-    "wrong3": "半分",
-    "explanation": "満期時には額面（face value）で回収するため、cash受取はFVベース"
+    "question": "discount がある note でも、満期時（at maturity）に実際に受け取る cash は通常いくらか？",
+    "correct": "額面金額（face value）",
+    "wrong1": "現在価値（present value, PV）",
+    "wrong2": "両者の平均額（average of FV and PV）",
+    "wrong3": "額面の半分（half of face value）",
+    "explanation": "discount がある場合でも、満期時（at maturity）に受け取る cash は通常、額面金額（face value）である。discount は初回認識時の carrying amount が face value より低いことを示すが、時間の経過とともに amortization され、満期時には carrying amount は face value に一致する。"
   },
   {
     "id": 73,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountの償却により何が増える？",
-    "correct": "interest revenue",
-    "wrong1": "cash",
-    "wrong2": "expense",
-    "wrong3": "元本",
-    "explanation": "discountの償却によりinterest revenueが増加する（追加利息の認識）"
+    "question": "discount の償却（amortization of discount）により通常何が増える？",
+    "correct": "interest revenue（利息収益）",
+    "wrong1": "cash（現金）",
+    "wrong2": "expense（費用）",
+    "wrong3": "principal（元本）",
+    "explanation": "discount は face value と初回 carrying amount の差額であり、interest element を表す。したがって、discount を償却すると、その分だけ interest revenue が追加で認識される。"
   },
   {
     "id": 74,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountがゼロになる時はいつ？",
-    "correct": "満期時",
-    "wrong1": "期首",
-    "wrong2": "中間",
-    "wrong3": "任意",
-    "explanation": "discountは満期までに全て償却され、ゼロになる"
+    "question": "discount は通常いつゼロになるか？",
+    "correct": "満期時（at maturity）",
+    "wrong1": "期首（at issuance）",
+    "wrong2": "期中の任意の時点（at an intermediate date）",
+    "wrong3": "会社が選ぶ時点（at any chosen date）",
+    "explanation": "discount は手形の初回認識時には face value と carrying amount の差額として存在するが、時間の経過とともに amortization される。満期時（at maturity）には carrying amount が face value に一致するため、discount はゼロになる。"
   },
   {
     "id": 75,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "満期時の仕訳は？",
+    "question": "手形（note receivable）が満期日（maturity date）を迎え、元本を回収したときの仕訳はどれか？",
     "correct": "Cash / Notes receivable",
-    "wrong1": "Expense",
-    "wrong2": "Cash / Revenue",
-    "wrong3": "Notes / Cash",
-    "explanation": "満期時はCash / Notes receivableで元本を回収する（帳簿価額＝額面になっている）"
+    "wrong1": "Interest expense / Cash",
+    "wrong2": "Cash / Interest revenue",
+    "wrong3": "Notes receivable / Cash",
+    "explanation": "満期日（maturity date）に元本を回収する場合は、Cash を借方、Notes receivable を貸方に計上する。満期時には note の carrying amount は通常 face value に一致しているため、元本回収の仕訳は Cash / Notes receivable となる。"
   },
   {
     "id": 76,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "手形満期時の受取額は？",
-    "correct": "額面金額",
-    "wrong1": "現在価値",
-    "wrong2": "平均額",
-    "wrong3": "利息のみ",
-    "explanation": "満期時の受取額は額面金額（face value）"
+    "question": "手形（note receivable）の満期日（maturity date）に通常受け取る金額はどれか？",
+    "correct": "額面金額（face value / maturity value）",
+    "wrong1": "現在価値（present value）",
+    "wrong2": "平均額（average amount）",
+    "wrong3": "利息のみ（interest only）",
+    "explanation": "手形の額面金額（face value）は、満期日（maturity date）に受け取る将来金額を表す。現在価値（present value）は初回認識時などの今の価値であり、満期日の受取額そのものではない。"
   },
   {
     "id": 77,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息付き手形の場合の受取額は？",
-    "correct": "元本＋利息",
-    "wrong1": "元本のみ",
-    "wrong2": "利息のみ",
-    "wrong3": "PV",
-    "explanation": "利息付き手形では満期時に元本＋利息を受け取る"
+    "question": "利息付き手形（interest-bearing note）の満期時（at maturity）に通常受け取る金額はどれか？",
+    "correct": "元本＋利息（principal + interest）",
+    "wrong1": "元本のみ（principal only）",
+    "wrong2": "利息のみ（interest only）",
+    "wrong3": "現在価値（present value）",
+    "explanation": "interest-bearing note では、契約上の利息（stated interest）が明示されているため、満期時（at maturity）には通常、元本（principal）に加えて利息（interest）も受け取る。"
   },
   {
     "id": 78,
@@ -5764,36 +5764,36 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "interest-bearing noteとnoninterest noteの違いは？",
-    "correct": "利息の表示方法",
-    "wrong1": "元本",
-    "wrong2": "期間",
-    "wrong3": "収益",
-    "explanation": "違いは利息の表現方法：明示（interest-bearing）か内在（noninterest）か"
+    "question": "interest-bearing note と noninterest-bearing note の主な違いは何か？",
+    "correct": "利息の表示方法（how interest is stated）",
+    "wrong1": "元本の大きさ（amount of principal）",
+    "wrong2": "期間の長さ（length of term）",
+    "wrong3": "収益の有無（whether revenue exists）",
+    "explanation": "主な違いは利息の表現方法である。interest-bearing note では interest が明示され、noninterest-bearing note では interest が表面上は示されない。ただし noninterest-bearing note でも、会計上は discount や imputed interest を通じて利息が内在している。"
   },
   {
     "id": 82,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "interest-bearing noteのinterest revenueの特徴は？",
-    "correct": "cashと一致する（通常）",
-    "wrong1": "一致しない",
-    "wrong2": "ゼロ",
-    "wrong3": "任意",
-    "explanation": "通常はstated rateのためcashと一致。ただしdiscount/premiumがある場合はEIRを使い一致しない"
+    "question": "interest-bearing note の interest revenue は通常どのような特徴をもつ？",
+    "correct": "通常は cash received と一致するが、discount / premium がある場合は一致しない（usually equals cash received unless discount or premium exists）",
+    "wrong1": "常に cash received と一致しない（never equals cash received）",
+    "wrong2": "常にゼロである（is always zero）",
+    "wrong3": "任意に決められる（is arbitrary）",
+    "explanation": "interest-bearing note では、契約上の stated rate に基づく利息が明示されているため、discount / premium がない通常ケースでは interest revenue は cash received と一致する。ただし、discount または premium がある場合は effective interest method を用いるため、一致しないことがある。"
   },
   {
     "id": 83,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "noninterest noteのinterest revenueは？",
-    "correct": "cashと一致しない",
-    "wrong1": "一致する",
-    "wrong2": "ゼロ",
-    "wrong3": "任意",
-    "explanation": "noninterest noteではEIRを使うため、interest revenueとcashは一致しない"
+    "question": "noninterest-bearing note の interest revenue は cash receipt とどうなる？",
+    "correct": "cash と一致しない（does not equal cash received）",
+    "wrong1": "cash と一致する（equals cash received）",
+    "wrong2": "常にゼロになる（is always zero）",
+    "wrong3": "任意に決められる（is arbitrary）",
+    "explanation": "noninterest-bearing note は、利息がないように見えても、実際には discount を通じて interest が含まれている。したがって、interest revenue は effective interest method により認識され、受け取る cash と単純には一致しない。"
   },
   {
     "id": 84,
@@ -5812,12 +5812,12 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息付き手形で未収利息がある場合どうする？",
-    "correct": "accrueする",
-    "wrong1": "無視する",
-    "wrong2": "費用にする",
-    "wrong3": "繰延する",
-    "explanation": "利息が発生している場合、受取前でもaccrualとして未収利息を計上する"
+    "question": "interest-bearing note で、決算日（year-end）までに利息が発生しているがまだ受け取っていない場合、通常どう処理する？",
+    "correct": "accrue して未収利息（interest receivable）を計上する",
+    "wrong1": "無視する（ignore it）",
+    "wrong2": "費用として処理する（record as expense）",
+    "wrong3": "繰延する（defer it）",
+    "explanation": "interest-bearing note では、現金をまだ受け取っていなくても、決算日までに発生した利息は accrual basis に基づいて認識する。したがって、interest receivable と interest revenue を計上する。"
   },
   {
     "id": 86,
@@ -5836,12 +5836,12 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息受取時の仕訳は？",
+    "question": "期末に未収利息（interest receivable）を計上済みの場合、後日利息を受け取ったときの仕訳はどれか？",
     "correct": "Cash / Interest receivable",
-    "wrong1": "Cash / Revenue",
-    "wrong2": "Expense / Cash",
-    "wrong3": "Notes / Cash",
-    "explanation": "利息受取時はCash / Interest receivableで回収する（収益は既に計上済）"
+    "wrong1": "Cash / Interest revenue",
+    "wrong2": "Interest expense / Cash",
+    "wrong3": "Notes receivable / Cash",
+    "explanation": "期末にすでに未収利息（interest receivable）と受取利息（interest revenue）を計上している場合、後日利息を受け取ったときは Cash を借方、Interest receivable を貸方として回収する。収益（interest revenue）はすでに前期または前の時点で認識済みである。"
   },
   {
     "id": 88,
@@ -5884,24 +5884,24 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "interest payableは何か？",
-    "correct": "未払利息（負債）",
-    "wrong1": "収益",
-    "wrong2": "資産",
-    "wrong3": "元本",
-    "explanation": "interest payable＝発生しているが未払いの利息（負債）"
+    "question": "interest payable とは何か？",
+    "correct": "発生しているがまだ支払っていない利息を表す負債（accrued but unpaid interest liability）",
+    "wrong1": "受け取った利息収益（interest revenue received）",
+    "wrong2": "将来回収する利息資産（interest receivable asset）",
+    "wrong3": "借入元本（principal of the note）",
+    "explanation": "interest payable は、時間の経過によりすでに発生しているが、まだ現金で支払っていない利息を表す負債である。発生主義（accrual basis）では、支払日前でも interest expense と interest payable を認識する。"
   },
   {
     "id": 92,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "interest payableの仕訳は？",
-    "correct": "Expense / Payable",
-    "wrong1": "Cash / Expense",
-    "wrong2": "Revenue / Cash",
-    "wrong3": "Notes / Cash",
-    "explanation": "未払利息はExpense / Payableで計上（発生主義）"
+    "question": "決算日（year-end）までに利息が発生しているが、まだ支払っていない場合、未払利息（interest payable）の調整仕訳はどれか？",
+    "correct": "Interest expense / Interest payable",
+    "wrong1": "Cash / Interest expense",
+    "wrong2": "Interest revenue / Cash",
+    "wrong3": "Notes payable / Cash",
+    "explanation": "発生主義（accrual basis）では、現金の支払前でも、決算日までに発生した利息は認識する必要がある。したがって、adjusting entry は Interest expense を借方、Interest payable を貸方に計上する。"
   },
   {
     "id": 93,
@@ -5920,30 +5920,6 @@ const QUIZ_DATA = [
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息の計算期間が6ヶ月の場合どうする？",
-    "correct": "6/12で按分",
-    "wrong1": "×2",
-    "wrong2": "そのまま",
-    "wrong3": "無視する",
-    "explanation": "6ヶ月なら6/12として期間按分する（time要素）"
-  },
-  {
-    "id": 95,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利率が年率の場合の期間調整は？",
-    "correct": "月数/12",
-    "wrong1": "月数×12",
-    "wrong2": "無視",
-    "wrong3": "任意",
-    "explanation": "年利率は年ベースなので、期間は月数/12で調整する"
-  },
-  {
-    "id": 96,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
     "question": "利息計算で最も重要な3要素は？",
     "correct": "元本・利率・期間",
     "wrong1": "元本のみ",
@@ -5952,7 +5928,7 @@ const QUIZ_DATA = [
     "explanation": "利息は「元本×利率×期間」の3要素で決まる（time value of moneyの基本）"
   },
   {
-    "id": 97,
+    "id": 95,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -5964,31 +5940,7 @@ const QUIZ_DATA = [
     "explanation": "accrualをしないと発生済の利息が計上されず、収益が過少になる"
   },
   {
-    "id": 98,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息費用が過大になる原因は？",
-    "correct": "期間ミス",
-    "wrong1": "正確計算",
-    "wrong2": "無視",
-    "wrong3": "減少",
-    "explanation": "期間を誤ると利息費用が過大または過少になる"
-  },
-  {
-    "id": 99,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息計算の基本は？",
-    "correct": "principal×rate×time",
-    "wrong1": "PVのみ",
-    "wrong2": "FVのみ",
-    "wrong3": "平均",
-    "explanation": "利息計算の基本式はprincipal×rate×time（すべての問題の土台）"
-  },
-  {
-    "id": 100,
+    "id": 96,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6000,7 +5952,7 @@ const QUIZ_DATA = [
     "explanation": "利息計算は年ベースなので、8ヶ月の場合は8/12として期間按分する（timeを調整）"
   },
   {
-    "id": 101,
+    "id": 97,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6012,19 +5964,7 @@ const QUIZ_DATA = [
     "explanation": "利息＝元本×利率×期間なので、50000×12%×8/12で$4,000となる"
   },
   {
-    "id": 102,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利率が月利の場合の期間処理は？",
-    "correct": "そのまま月数で計算",
-    "wrong1": "12で割る",
-    "wrong2": "無視する",
-    "wrong3": "平均する",
-    "explanation": "利率が月利の場合はすでに月ベースなので、そのまま月数を使って計算する（単位を合わせる）"
-  },
-  {
-    "id": 103,
+    "id": 98,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6036,7 +5976,7 @@ const QUIZ_DATA = [
     "explanation": "期間を長く見積もると、その分利息が増えるためinterest revenueは過大計上される"
   },
   {
-    "id": 104,
+    "id": 99,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6048,67 +5988,19 @@ const QUIZ_DATA = [
     "explanation": "期間を短く見積もると、本来の利息より少なくなるためinterest expenseは過少計上される"
   },
   {
-    "id": 105,
+    "id": 100,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息計算で元本を間違えるとどうなる？",
-    "correct": "金額が大きくズレる",
-    "wrong1": "影響なし",
-    "wrong2": "少しだけズレる",
-    "wrong3": "無視できる",
-    "explanation": "元本は計算のベースなので、間違えると利息全体が大きくズレる（最重要要素の1つ）"
+    "question": "次のうち、interest = principal × rate × time の principal に当たるものはどれか？",
+    "correct": "手形の元本金額（face value or carrying amount, depending on the method）",
+    "wrong1": "年利率（annual interest rate）",
+    "wrong2": "保有期間（time outstanding）",
+    "wrong3": "満期日（maturity date）",
+    "explanation": "interest 計算では、principal は元本金額を表す。問題によっては face value を使う場合と carrying amount を使う場合があるため、まず何が元本かを見極めることが重要である。"
   },
   {
-    "id": 106,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息計算で利率を間違えるとどうなる？",
-    "correct": "比例してズレる",
-    "wrong1": "影響なし",
-    "wrong2": "小さい影響",
-    "wrong3": "無視できる",
-    "explanation": "利率は元本に比例して影響するため、間違えると利息も同じ割合でズレる"
-  },
-  {
-    "id": 107,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息計算で期間を間違えるとどうなる？",
-    "correct": "比例してズレる",
-    "wrong1": "影響なし",
-    "wrong2": "少しだけズレる",
-    "wrong3": "無視",
-    "explanation": "期間（time）はそのまま比例するため、ミスすると利息も比例してズレる"
-  },
-  {
-    "id": 108,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "interestの3要素のうち最も見落としやすいものは？",
-    "correct": "期間（time）",
-    "wrong1": "元本",
-    "wrong2": "利率",
-    "wrong3": "PV",
-    "explanation": "3要素（元本・利率・期間）の中で最も見落としやすいのは期間（time）"
-  },
-  {
-    "id": 109,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "interest計算の流れは？",
-    "correct": "元本→利率→期間",
-    "wrong1": "利率→元本→期間",
-    "wrong2": "期間→元本→利率",
-    "wrong3": "順不同",
-    "explanation": "利息計算は「元本→利率→期間」の順で整理するとミスしにくい（structure化）"
-  },
-  {
-    "id": 110,
+    "id": 101,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6120,19 +6012,19 @@ const QUIZ_DATA = [
     "explanation": "interest revenueは収益、interest expenseは費用であり、立場（貸付か借入か）で変わる"
   },
   {
-    "id": 111,
+    "id": 102,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "interest revenueはどの取引で発生する？",
-    "correct": "貸付",
-    "wrong1": "借入",
-    "wrong2": "支払",
-    "wrong3": "投資",
-    "explanation": "interest revenueは貸付（資産運用）によって発生する収益"
+    "question": "interest revenue は通常どのような取引で発生する？",
+    "correct": "貸付や note receivable の保有（lending or holding a note receivable）",
+    "wrong1": "借入や note payable の発行（borrowing or issuing a note payable）",
+    "wrong2": "利息の支払（interest payment）",
+    "wrong3": "元本の返済（repayment of principal）",
+    "explanation": "interest revenue は、会社が資金を貸し付けたり、note receivable を保有したりすることで発生する収益である。これに対して、借入側では通常 interest expense が発生する。"
   },
   {
-    "id": 112,
+    "id": 103,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6144,7 +6036,7 @@ const QUIZ_DATA = [
     "explanation": "interest expenseは借入（負債）によって発生するコスト"
   },
   {
-    "id": 113,
+    "id": 104,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6156,7 +6048,7 @@ const QUIZ_DATA = [
     "explanation": "notes receivableは将来現金を受け取る権利なので資産"
   },
   {
-    "id": 114,
+    "id": 105,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6168,7 +6060,7 @@ const QUIZ_DATA = [
     "explanation": "notes payableは将来現金を支払う義務なので負債"
   },
   {
-    "id": 115,
+    "id": 106,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6180,7 +6072,7 @@ const QUIZ_DATA = [
     "explanation": "回収時はCash / Notes receivableで資産を現金に変換する"
   },
   {
-    "id": 116,
+    "id": 107,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6192,7 +6084,7 @@ const QUIZ_DATA = [
     "explanation": "返済時はNotes payable / Cashで負債を消す"
   },
   {
-    "id": 117,
+    "id": 108,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6204,7 +6096,7 @@ const QUIZ_DATA = [
     "explanation": "利息付き手形では満期時に元本＋利息をまとめて受け取る"
   },
   {
-    "id": 118,
+    "id": 109,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6216,7 +6108,7 @@ const QUIZ_DATA = [
     "explanation": "無利息手形では満期時は額面金額（FV）のみ受け取る（利息はdiscountに含まれる）"
   },
   {
-    "id": 119,
+    "id": 110,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6228,7 +6120,7 @@ const QUIZ_DATA = [
     "explanation": "interest-bearing noteの利息は時間の経過とともに発生し、accrual basisで認識する"
   },
   {
-    "id": 120,
+    "id": 111,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6240,31 +6132,31 @@ const QUIZ_DATA = [
     "explanation": "noninterest noteの利息はdiscountの償却として時間に応じて発生する（implicit interest）"
   },
   {
-    "id": 121,
+    "id": 112,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountがある場合の帳簿価額は？",
-    "correct": "FVより小さい",
-    "wrong1": "FVより大きい",
-    "wrong2": "同じ",
-    "wrong3": "ゼロ",
-    "explanation": "discountがある場合、帳簿価額は現在価値（PV）から始まるためFVより小さい"
+    "question": "discount がある note の帳簿価額（carrying amount / book value）は、face value（FV）と比べてどうなる？",
+    "correct": "FVより小さい（less than face value）",
+    "wrong1": "FVより大きい（greater than face value）",
+    "wrong2": "FVと同じ（equal to face value）",
+    "wrong3": "ゼロになる（becomes zero）",
+    "explanation": "note に discount があるということは、face value より低い金額で初回認識されるということを意味する。帳簿価額は present value から始まり、時間の経過とともに face value に近づいていく。"
   },
   {
-    "id": 122,
+    "id": 113,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "discountが償却されると帳簿価額は？",
-    "correct": "増加する",
-    "wrong1": "減少する",
-    "wrong2": "変わらない",
-    "wrong3": "ゼロ",
-    "explanation": "discountを償却すると帳簿価額は増加し、最終的にFVに一致する"
+    "question": "discount が償却（amortization）されると、手形の carrying amount は通常どうなる？",
+    "correct": "増加する（increase）",
+    "wrong1": "減少する（decrease）",
+    "wrong2": "変わらない（no change）",
+    "wrong3": "ゼロになる（becomes zero）",
+    "explanation": "discount がある note は、初回認識時の carrying amount が face value より低い。discount を償却すると、その差額が少しずつ減るため、carrying amount は増加し、最終的に face value に一致する。"
   },
   {
-    "id": 123,
+    "id": 114,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6276,19 +6168,19 @@ const QUIZ_DATA = [
     "explanation": "interest revenueが増えるのはdiscountを償却して利息として認識するため"
   },
   {
-    "id": 124,
+    "id": 115,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息計算で最も基本となる考え方は？",
-    "correct": "時間に応じた配分",
-    "wrong1": "現金ベース",
-    "wrong2": "PV計算",
-    "wrong3": "FV計算",
-    "explanation": "利息計算の本質は「時間に応じて収益・費用を配分すること」"
+    "question": "利息（interest revenue / interest expense）を正しく認識するための基本的な考え方はどれか？",
+    "correct": "時間の経過に応じて各期間へ配分する（allocate over time）",
+    "wrong1": "現金の受払時にまとめて認識する（recognize when cash is paid or received）",
+    "wrong2": "PV計算だけを行う（perform only PV calculation）",
+    "wrong3": "FVだけを確認する（look only at FV）",
+    "explanation": "利息は発生主義（accrual basis）に基づき、時間の経過に応じて各期間へ配分して認識する。したがって、cash の受払時点と認識時点は一致しないことがある。"
   },
   {
-    "id": 125,
+    "id": 116,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6300,31 +6192,19 @@ const QUIZ_DATA = [
     "explanation": "利息とはお金を時間にわたって使用する対価（time value of money）"
   },
   {
-    "id": 126,
+    "id": 117,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "time value of moneyとは？",
-    "correct": "お金の時間価値",
-    "wrong1": "利率",
-    "wrong2": "元本",
-    "wrong3": "割引率",
-    "explanation": "time value of moneyとは、お金は時間によって価値が変わるという考え方"
+    "question": "Notes Receivable / Payable で interest を認識する理由として最も適切なのはどれか？",
+    "correct": "お金の時間価値（time value of money）を反映するため",
+    "wrong1": "元本（principal）が自動的に増えるため",
+    "wrong2": "税金計算のため",
+    "wrong3": "費用を平準化するため",
+    "explanation": "interest は、お金の時間価値（time value of money）の対価である。そのため、Notes Receivable / Payable では、時間の経過に応じて interest revenue / interest expense を発生主義で認識する。"
   },
   {
-    "id": 127,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息はなぜ発生する？",
-    "correct": "時間経過による価値変化",
-    "wrong1": "元本増加",
-    "wrong2": "税金",
-    "wrong3": "費用",
-    "explanation": "利息は時間の経過により発生する（元本が増えたわけではない）"
-  },
-  {
-    "id": 128,
+    "id": 118,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6336,7 +6216,7 @@ const QUIZ_DATA = [
     "explanation": "PVは現在時点の価値、FVは将来時点の価値を表す"
   },
   {
-    "id": 129,
+    "id": 119,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6348,19 +6228,19 @@ const QUIZ_DATA = [
     "explanation": "PVは今の価値、FVは将来の価値という時間の違いを表している"
   },
   {
-    "id": 130,
+    "id": 120,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "FVは何を意味する？",
-    "correct": "将来価値",
-    "wrong1": "現在価値",
-    "wrong2": "元本",
-    "wrong3": "利息",
-    "explanation": "discountはFVとPVの差であり、実質的な利息部分を意味する"
+    "question": "Notes の文脈で face value は通常何を表す？",
+    "correct": "満期日に受け取る将来金額（future amount at maturity）",
+    "wrong1": "現在価値（present value）",
+    "wrong2": "元本の帳簿価額（carrying amount）",
+    "wrong3": "利息収益（interest revenue）",
+    "explanation": "face value は、満期日に受け取る将来金額を表す。一方、present value は初回認識時の現在の価値であり、discount がある場合は FV と PV に差額が生じる。"
   },
   {
-    "id": 131,
+    "id": 121,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6372,7 +6252,7 @@ const QUIZ_DATA = [
     "explanation": "利息計算の目的は、期間ごとに正しく収益・費用を配分すること（accrual）"
   },
   {
-    "id": 132,
+    "id": 122,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6384,7 +6264,7 @@ const QUIZ_DATA = [
     "explanation": "利息は時間の経過に応じて発生するため、支払時ではなく期間ベースで認識する"
   },
   {
-    "id": 133,
+    "id": 123,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6396,31 +6276,19 @@ const QUIZ_DATA = [
     "explanation": "利息の認識は発生主義（accrual basis）に基づく"
   },
   {
-    "id": 134,
+    "id": 124,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "利息の認識は何に基づく？",
-    "correct": "発生主義",
-    "wrong1": "現金主義",
-    "wrong2": "税法",
-    "wrong3": "任意",
-    "explanation": "期間按分を正しく行うことで利息のズレを防ぐことができる"
+    "question": "手形の利息（interest revenue / interest expense）は、受取日・支払日ではなく通常何に基づいて認識する？",
+    "correct": "発生主義（accrual basis）",
+    "wrong1": "現金主義（cash basis）",
+    "wrong2": "税法基準（tax basis）",
+    "wrong3": "任意の基準（any basis）",
+    "explanation": "Notes receivable / payable の利息は、cash の受払ではなく、期間の経過に応じて発生主義（accrual basis）で認識する。そのため、期末には interest receivable や interest payable の計上が必要になることがある。"
   },
   {
-    "id": 135,
-    "category": "concept",
-    "topic": "Notes Receivable and Payable",
-    "tag": "concept,important,medium",
-    "question": "利息のズレを防ぐ方法は？",
-    "correct": "期間按分",
-    "wrong1": "平均",
-    "wrong2": "無視",
-    "wrong3": "まとめて処理",
-    "explanation": "Notes分野で最重要の式は「principal×rate×time」"
-  },
-  {
-    "id": 136,
+    "id": 125,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
@@ -6432,19 +6300,19 @@ const QUIZ_DATA = [
     "explanation": "Notesの本質は「時間（time）と利息（interest）の関係」を理解すること"
   },
   {
-    "id": 137,
+    "id": 126,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,important,medium",
-    "question": "Notes分野の本質は何か？",
-    "correct": "時間と利息の関係",
-    "wrong1": "元本のみ",
-    "wrong2": "利率のみ",
-    "wrong3": "計算方法",
-    "explanation": "Notes分野の本質は「時間（time）と利息（interest）の関係」であり、利息は元本の時間価値（time value of money）の対価として、発生主義に基づき期間配分される（principal×rate×time）"
+    "question": "Notes Receivable / Payable の interest を期間配分する考え方の基礎は何か？",
+    "correct": "お金の時間価値（time value of money）",
+    "wrong1": "元本固定の原則（fixed principal rule）",
+    "wrong2": "額面重視の原則（face value rule）",
+    "wrong3": "現金主義（cash basis）",
+    "explanation": "Notes の interest は、お金の時間価値（time value of money）に基づく。したがって、interest は cash の受払時ではなく、時間の経過に応じて発生主義で各期間に配分される。"
   },
   {
-    "id": 138,
+    "id": 127,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,core,important",
@@ -6456,7 +6324,7 @@ const QUIZ_DATA = [
     "explanation": "interestは時間価値ベースで「帳簿価額 × 実効金利」で計算する"
   },
   {
-    "id": 139,
+    "id": 128,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,core,important",
@@ -6468,7 +6336,7 @@ const QUIZ_DATA = [
     "explanation": "cashの利息は契約ベースなので「額面 × 表面利率」で決まる"
   },
   {
-    "id": 140,
+    "id": 129,
     "category": "concept",
     "topic": "Notes Receivable and Payable",
     "tag": "concept,interest,core,important",

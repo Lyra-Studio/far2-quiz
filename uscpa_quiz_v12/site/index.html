@@ -132,6 +132,14 @@
       <div class="expl-header">
         <span class="result-icon" id="resultIcon">✓</span>
         <span class="result-label" id="resultLabel">正解！</span>
+        <button class="tts-btn expl-tts-btn" id="explTtsBtn" onclick="speakExplanation()" title="解説を読み上げ">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
       </div>
       <p class="expl-text" id="explText"></p>
       <p class="master-info hidden" id="masterInfo"></p>

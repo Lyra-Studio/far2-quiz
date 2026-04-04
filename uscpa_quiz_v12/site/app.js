@@ -1,13 +1,13 @@
 /* ================================================================
-   USCPA Quiz App v12  —  app.js
-   v12 変更点:
-     ① 難易度フィルタ（easy / medium / hard）追加
-        ・ホーム画面に「難易度」選択UIを追加
-        ・複数選択可能（デフォルト全選択）
-        ・選択した難易度の問題だけが出題対象になる
-        ・論点フィルタと組み合わせて機能する
-     ② Netlify対応: index.html + app.js + questions.js + style.css の
-        4ファイル構成（相対パス）
+   USCPA Quiz App v13  —  app.js
+   v13 変更点:
+     ① 周完了バグ修正
+        ・markMastered での周完了チェックを「全問数との比較」から
+          「その論点の未正解問題がゼロになったか」で判定する方式に変更
+        ・復習ボックスに問題が残っていても周完了が正しくカウントされる
+        ・復習ボックスのバナー表示・ボタン有効化が正しく動くよう修正
+     ② 解説の音声読み上げボタンを追加
+     ③ questions.js 682問（Notes: 141→129問）に対応
 ================================================================ */
 
 
@@ -60,6 +60,7 @@ const state = {
   masterQueue:          [],
   masterDone:           new Set(),
   isSpeaking:           false,
+  isExplSpeaking:       false,
   reviewIds:            new Set(),
   sessionWasAllDone:    false,
   masteryByTopic:       new Map(),
@@ -182,7 +183,7 @@ function buildDifficultyFilter() {
     btn.addEventListener('click', () => {
       const idx = state.selectedDifficulties.indexOf(value);
       if (idx >= 0) {
-        if (state.selectedDifficulties.length === 1) return; // 最低1つ残す
+        if (state.selectedDifficulties.length === 1) return;
         state.selectedDifficulties.splice(idx, 1);
         btn.classList.remove('active');
       } else {
@@ -213,11 +214,16 @@ function getTopicData(topic) {
   return state.masteryByTopic.get(topic);
 }
 
-function buildPrioritizedPool(questions) {
-  const masteredKeys = new Set();
+function getMasteredKeys() {
+  const keys = new Set();
   for (const [, data] of state.masteryByTopic.entries()) {
-    for (const k of data.currentKeys) masteredKeys.add(k);
+    for (const k of data.currentKeys) keys.add(k);
   }
+  return keys;
+}
+
+function buildPrioritizedPool(questions) {
+  const masteredKeys = getMasteredKeys();
 
   const unseen = [];
   const review = [];
@@ -271,6 +277,16 @@ function saveMastery() {
   localStorage.setItem(KEY_MASTERY, JSON.stringify(obj));
 }
 
+/*
+ * ▼ 周完了バグ修正（v13）
+ *
+ * 旧ロジック: currentKeys.size >= totalInTopic で周完了判定
+ *   → 復習ボックスに問題が残っているとそれらは currentKeys に入らないため
+ *     totalInTopic に永遠に届かず周完了にならなかった
+ *
+ * 新ロジック:「未正解 & 復習ボックス外の問題がゼロ」になったら周完了
+ *   → 復習ボックスの問題は周完了判定から除外して自然に一周を完了できる
+ */
 function markMastered(q) {
   const topic = q.topic;
   const key   = reviewKey(q);
@@ -278,8 +294,14 @@ function markMastered(q) {
 
   tData.currentKeys.add(key);
 
-  const totalInTopic = state.allQuestions.filter(x => x.topic === topic).length;
-  if (tData.currentKeys.size >= totalInTopic) {
+  // 周完了チェック: その論点で「未正解かつ復習ボックス外」の問題がゼロになったら1周完了
+  const topicQuestions = state.allQuestions.filter(x => x.topic === topic);
+  const remaining = topicQuestions.filter(x => {
+    const k = reviewKey(x);
+    return !tData.currentKeys.has(k) && !state.reviewIds.has(k);
+  });
+
+  if (remaining.length === 0) {
     tData.laps++;
     tData.currentKeys = new Set();
   }
@@ -287,6 +309,7 @@ function markMastered(q) {
   saveMastery();
   updateMasteryBadge(topic);
 
+  // 正解したら復習ボックスから除外
   if (isReviewed(q)) {
     removeReview(q);
     updateReviewBanner();
@@ -358,7 +381,6 @@ function checkAll(on) {
 }
 
 function buildActiveQuestions() {
-  // 論点フィルタ + 難易度フィルタ 両方適用
   state.activeQuestions = state.allQuestions.filter(q =>
     (state.selectedTopics.length === 0 || state.selectedTopics.includes(q.topic)) &&
     matchesDifficulty(q)
@@ -504,11 +526,11 @@ function startQuiz() {
   speechSynthesis.cancel();
   state.answered          = false;
   state.isSpeaking        = false;
+  state.isExplSpeaking    = false;
   state.sessionWasAllDone = false;
 
   buildActiveQuestions();
 
-  // 復習モード
   if (state.selectedMode === 'review') {
     const reviewQs = state.allQuestions.filter(q => isReviewed(q));
     if (reviewQs.length === 0) {
@@ -523,7 +545,6 @@ function startQuiz() {
     return;
   }
 
-  // マスターモード
   if (state.selectedMode === 'master') {
     if (state.activeQuestions.length === 0) return;
     state.currentIndex     = 0;
@@ -536,7 +557,6 @@ function startQuiz() {
     return;
   }
 
-  // ランダム / 最初から（未正解優先フィルタ）
   if (state.activeQuestions.length === 0) return;
 
   const { pool, allDone } = buildPrioritizedPool(state.activeQuestions);
@@ -573,7 +593,8 @@ function showQuestion() {
   const q = getCurrentQ();
   if (!q) { showResult(); return; }
 
-  state.answered = false;
+  state.answered       = false;
+  state.isExplSpeaking = false;
 
   document.getElementById('qText').textContent = q.question;
 
@@ -582,15 +603,14 @@ function showQuestion() {
   document.getElementById('tagCat').textContent   = catLabel;
   document.getElementById('tagTopic').textContent = TOPIC_LABEL[q.topic] || q.topic;
 
-  // 難易度タグ表示
   const diffTag = document.getElementById('tagDiff');
   if (diffTag) {
     const tags = String(q.tag || '').split(',').map(t => t.trim());
     const diff = ['easy', 'medium', 'hard'].find(d => tags.includes(d)) || '';
     const diffLabel = { easy: '⭐ easy', medium: '⭐⭐ medium', hard: '⭐⭐⭐ hard' };
     if (diff) {
-      diffTag.textContent = diffLabel[diff];
-      diffTag.className   = `tag tag-diff tag-diff-${diff}`;
+      diffTag.textContent   = diffLabel[diff];
+      diffTag.className     = `tag tag-diff tag-diff-${diff}`;
       diffTag.style.display = '';
     } else {
       diffTag.style.display = 'none';
@@ -602,6 +622,9 @@ function showQuestion() {
 
   document.getElementById('explanation').classList.add('hidden');
   document.getElementById('btnSkip').classList.remove('hidden');
+
+  const explTtsBtn = document.getElementById('explTtsBtn');
+  if (explTtsBtn) explTtsBtn.classList.remove('speaking');
 
   syncReviewCheckbox();
 
@@ -674,8 +697,7 @@ function onAnswer(selectedBtn, isCorrect) {
   } else {
     addReview(q);
     if (state.selectedMode === 'master') {
-      const wrongQ = state.masterQueue.shift();
-      state.masterQueue.push(wrongQ);
+      state.masterQueue.push(state.masterQueue.shift());
     }
   }
 
@@ -728,6 +750,12 @@ function showExplanation(isCorrect, q) {
     info.classList.add('hidden');
   }
 
+  const explTtsBtn = document.getElementById('explTtsBtn');
+  if (explTtsBtn) {
+    state.isExplSpeaking = false;
+    explTtsBtn.classList.remove('speaking');
+  }
+
   card.classList.remove('hidden');
   setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
 }
@@ -737,6 +765,9 @@ function showExplanation(isCorrect, q) {
    § 17  次の問題 / スキップ
 ────────────────────────────────────────── */
 function nextQuestion() {
+  speechSynthesis.cancel();
+  state.isExplSpeaking = false;
+
   if (state.selectedMode === 'master') {
     if (state.masterQueue.length === 0) {
       clearProgress(); updateReviewBanner(); showResult();
@@ -864,8 +895,9 @@ function makeBtn(type, label, onClick) {
 
 function replaySession() {
   speechSynthesis.cancel();
-  state.answered   = false;
-  state.isSpeaking = false;
+  state.answered       = false;
+  state.isSpeaking     = false;
+  state.isExplSpeaking = false;
 
   if (state.selectedMode === 'master') {
     buildActiveQuestions();
@@ -936,7 +968,8 @@ function showScreen(id) {
 
 function goHome() {
   speechSynthesis.cancel();
-  state.isSpeaking = false;
+  state.isSpeaking     = false;
+  state.isExplSpeaking = false;
   checkResumable();
   updateReviewBanner();
   updateSelectedCount();
@@ -947,7 +980,7 @@ function goHome() {
 
 
 /* ──────────────────────────────────────────
-   § 21  音声読み上げ
+   § 21  音声読み上げ — 問題文
 ────────────────────────────────────────── */
 function speak() {
   if (!('speechSynthesis' in window)) return;
@@ -960,6 +993,13 @@ function speak() {
     return;
   }
 
+  if (state.isExplSpeaking) {
+    speechSynthesis.cancel();
+    state.isExplSpeaking = false;
+    const explBtn = document.getElementById('explTtsBtn');
+    if (explBtn) explBtn.classList.remove('speaking');
+  }
+
   const q = getCurrentQ();
   if (!q) return;
 
@@ -969,15 +1009,57 @@ function speak() {
   state.isSpeaking = true;
   btn.classList.add('speaking');
 
+  speakTokens(tokens, () => {
+    state.isSpeaking = false;
+    btn.classList.remove('speaking');
+  });
+}
+
+
+/* ──────────────────────────────────────────
+   § 21b  音声読み上げ — 解説文
+────────────────────────────────────────── */
+function speakExplanation() {
+  if (!('speechSynthesis' in window)) return;
+  const btn = document.getElementById('explTtsBtn');
+  if (!btn) return;
+
+  if (state.isExplSpeaking) {
+    speechSynthesis.cancel();
+    state.isExplSpeaking = false;
+    btn.classList.remove('speaking');
+    return;
+  }
+
+  if (state.isSpeaking) {
+    speechSynthesis.cancel();
+    state.isSpeaking = false;
+    const qBtn = document.getElementById('ttsBtn');
+    if (qBtn) qBtn.classList.remove('speaking');
+  }
+
+  const text = document.getElementById('explText')?.textContent || '';
+  if (!text) return;
+
+  const tokens = splitLang(text);
+  if (!tokens.length) return;
+
+  state.isExplSpeaking = true;
+  btn.classList.add('speaking');
+
+  speakTokens(tokens, () => {
+    state.isExplSpeaking = false;
+    btn.classList.remove('speaking');
+  });
+}
+
+function speakTokens(tokens, onEnd) {
   tokens.forEach((tok, i) => {
     const utt  = new SpeechSynthesisUtterance(tok.text);
     utt.lang   = tok.isEn ? 'en-US' : 'ja-JP';
     utt.rate   = tok.isEn ? 0.85 : 0.9;
     if (i === tokens.length - 1) {
-      utt.onend = utt.onerror = () => {
-        state.isSpeaking = false;
-        btn.classList.remove('speaking');
-      };
+      utt.onend = utt.onerror = onEnd;
     }
     speechSynthesis.speak(utt);
   });

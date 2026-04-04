@@ -300,6 +300,13 @@ body {
 .tts-btn.speaking { background: var(--blue-l); border-color: var(--blue); color: var(--blue); animation: pulse 1s ease infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
+/* 解説読み上げボタン — 問題カードのボタンより小さめ */
+.expl-tts-btn {
+  margin-left: auto;
+  width: 32px; height: 32px;
+  flex-shrink: 0;
+}
+
 .review-label {
   display: flex; align-items: center; gap: 8px; cursor: pointer; padding-top: 10px;
   border-top: 1px solid var(--gray-bd);
