@@ -1,37 +1,28 @@
-/* ============================================================
-   USCPA Quiz App v12 — style.css
-   v12 追加スタイル:
-     ・.diff-filter  — 難易度フィルタ行
-     ・.diff-btn     — 難易度ボタン（easy/medium/hard）
-     ・.tag-diff-*   — クイズ画面の難易度タグ
-   ============================================================ */
+/* USCPA Quiz App v16 — style.css */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --blue:       #2563EB;
-  --blue-d:     #1D4ED8;
-  --blue-l:     #EFF6FF;
-  --blue-m:     #DBEAFE;
-  --green:      #16A34A;
-  --green-bg:   #F0FDF4;
-  --green-l:    #DCFCE7;
-  --red:        #DC2626;
-  --red-bg:     #FEF2F2;
-  --amber:      #D97706;
-  --amber-bg:   #FFFBEB;
-  --amber-bd:   #FCD34D;
-  --purple:     #7C3AED;
-  --purple-bg:  #F5F3FF;
-  --purple-l:   #EDE9FE;
-  --gray-bg:    #F8FAFC;
-  --gray-bd:    #E2E8F0;
-  --gray-text:  #64748B;
-  --text:       #1E293B;
-  --white:      #FFFFFF;
-  --orange-bg:  #FFF7ED;
-  --orange-bd:  #FED7AA;
-  --orange-t:   #92400E;
+  --blue:      #2563EB;
+  --blue-d:    #1D4ED8;
+  --blue-l:    #EFF6FF;
+  --blue-m:    #DBEAFE;
+  --green:     #16A34A;
+  --green-bg:  #F0FDF4;
+  --green-l:   #DCFCE7;
+  --red:       #DC2626;
+  --red-bg:    #FEF2F2;
+  --amber:     #D97706;
+  --amber-bg:  #FFFBEB;
+  --amber-bd:  #FCD34D;
+  --purple:    #7C3AED;
+  --purple-bg: #F5F3FF;
+  --purple-l:  #EDE9FE;
+  --gray-bg:   #F8FAFC;
+  --gray-bd:   #E2E8F0;
+  --gray-text: #64748B;
+  --text:      #1E293B;
+  --white:     #FFFFFF;
 
   --r-sm:   8px;
   --r-md:   12px;
@@ -54,16 +45,9 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── ヘッダー ── */
-.header {
-  background: var(--white);
-  border-bottom: 1px solid var(--gray-bd);
-  position: sticky; top: 0; z-index: 100; padding: 0 12px;
-}
-.header-inner {
-  max-width: 600px; margin: 0 auto; height: 54px;
-  display: flex; align-items: center; justify-content: space-between;
-}
+/* ヘッダー */
+.header { background: var(--white); border-bottom: 1px solid var(--gray-bd); position: sticky; top: 0; z-index: 100; padding: 0 12px; }
+.header-inner { max-width: 600px; margin: 0 auto; height: 54px; display: flex; align-items: center; justify-content: space-between; }
 .header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .home-btn {
   flex-shrink: 0; width: 40px; height: 40px;
@@ -72,57 +56,36 @@ body {
   cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s;
 }
 .home-btn:active { background: var(--blue-l); border-color: var(--blue); color: var(--blue); transform: scale(.95); }
-.brand-badge {
-  background: var(--blue); color: #fff;
-  font-size: 11px; font-weight: 700; letter-spacing: .06em;
-  padding: 3px 7px; border-radius: var(--r-sm); flex-shrink: 0;
-}
-.brand-name { font-size: 14px; font-weight: 600; white-space: nowrap; }
-.header-score {
-  display: flex; align-items: baseline; gap: 2px;
-  background: var(--blue-l); padding: 5px 12px;
-  border-radius: var(--r-full); font-size: 14px; flex-shrink: 0;
-}
+.brand-badge { background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 3px 7px; border-radius: var(--r-sm); flex-shrink: 0; }
+.brand-name  { font-size: 14px; font-weight: 600; white-space: nowrap; }
+.header-score { display: flex; align-items: baseline; gap: 2px; background: var(--blue-l); padding: 5px 12px; border-radius: var(--r-full); font-size: 14px; flex-shrink: 0; }
 .score-label { font-size: 11px; color: var(--blue); font-weight: 600; margin-right: 3px; }
 .header-score span:not(.score-label):not(.score-sep) { font-weight: 700; color: var(--blue); }
 .score-sep { color: var(--gray-text); margin: 0 1px; }
 
-/* ── メイン ── */
+/* メイン */
 .main { max-width: 600px; margin: 0 auto; padding: 12px 14px 80px; }
 .screen { display: block; }
 .screen.hidden { display: none !important; }
 
-/* ── スタートカード ── */
-.start-card {
-  background: var(--white); border-radius: var(--r-xl);
-  padding: 24px 16px 20px; margin-top: 10px; box-shadow: var(--shadow);
-}
-.start-icon { font-size: 40px; text-align: center; display: block; margin-bottom: 8px; }
+/* スタートカード */
+.start-card { background: var(--white); border-radius: var(--r-xl); padding: 24px 16px 20px; margin-top: 10px; box-shadow: var(--shadow); }
+.start-icon  { font-size: 40px; text-align: center; display: block; margin-bottom: 8px; }
 .start-title { font-size: 22px; font-weight: 700; text-align: center; line-height: 1.35; margin-bottom: 4px; }
-.start-sub { font-size: 13px; color: var(--gray-text); text-align: center; margin-bottom: 14px; }
+.start-sub   { font-size: 13px; color: var(--gray-text); text-align: center; margin-bottom: 14px; }
 .count-badge { text-align: center; margin-bottom: 16px; font-size: 13px; color: var(--gray-text); }
 .count-badge span { font-size: 28px; font-weight: 700; color: var(--blue); margin-right: 2px; }
 
 /* セクション */
 .section { margin-bottom: 16px; }
-.section-header {
-  display: flex; align-items: center;
-  justify-content: space-between; margin-bottom: 8px;
-}
-.section-title {
-  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  color: var(--gray-text); margin-bottom: 8px; display: block;
-}
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.section-title { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gray-text); margin-bottom: 8px; display: block; }
 .section-header .section-title { margin-bottom: 0; }
 .section-actions { display: flex; align-items: center; gap: 4px; }
-.link-btn {
-  background: none; border: none; color: var(--blue);
-  font-size: 12px; font-family: var(--font); cursor: pointer;
-  text-decoration: underline; text-underline-offset: 2px;
-}
-.link-sep { font-size: 12px; color: var(--gray-text); }
+.link-btn { background: none; border: none; color: var(--blue); font-size: 12px; font-family: var(--font); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.link-sep  { font-size: 12px; color: var(--gray-text); }
 
-/* ── トピックアイテム ── */
+/* トピックアイテム */
 .topic-item {
   display: flex; align-items: center; gap: 6px;
   padding: 10px 12px; border: 1.5px solid var(--gray-bd);
@@ -131,7 +94,7 @@ body {
 }
 .topic-item:last-child { margin-bottom: 0; }
 .topic-item.checked { border-color: var(--blue); background: var(--blue-l); }
-.topic-item:active { transform: scale(.99); }
+.topic-item:active  { transform: scale(.99); }
 
 .topic-cb {
   appearance: none; -webkit-appearance: none;
@@ -171,52 +134,12 @@ body {
   border: 1.5px solid var(--gray-bd); border-radius: var(--r-sm);
   background: var(--white); color: var(--gray-text);
   font-size: 14px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; transition: all .15s; line-height: 1;
+  display: flex; align-items: center; justify-content: center; transition: all .15s;
 }
 .btn-reset-topic:hover  { border-color: var(--red); color: var(--red); }
 .btn-reset-topic:active { background: var(--red-bg); border-color: var(--red); color: var(--red); transform: scale(.92) rotate(-30deg); }
 
-/* ── 難易度フィルタ（v12 新追加） ── */
-.diff-filter {
-  display: flex;
-  gap: 8px;
-}
-.diff-btn {
-  flex: 1;
-  min-height: 44px;
-  border: 1.5px solid var(--gray-bd);
-  border-radius: var(--r-md);
-  background: var(--white);
-  color: var(--gray-text);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: var(--font);
-  cursor: pointer;
-  transition: all .15s;
-  text-align: center;
-  opacity: .5;
-}
-.diff-btn.active { opacity: 1; }
-.diff-btn:active { transform: scale(.97); }
-
-/* easy = 緑 */
-.diff-green        { border-color: var(--green); color: var(--green); }
-.diff-green.active { background: var(--green-l); }
-
-/* medium = アンバー */
-.diff-amber        { border-color: var(--amber); color: var(--amber); }
-.diff-amber.active { background: var(--amber-bg); }
-
-/* hard = 赤 */
-.diff-red        { border-color: var(--red); color: var(--red); }
-.diff-red.active { background: var(--red-bg); }
-
-/* クイズ画面の難易度タグ */
-.tag-diff-easy   { background: var(--green-l);  color: var(--green); }
-.tag-diff-medium { background: var(--amber-bg); color: var(--amber); }
-.tag-diff-hard   { background: var(--red-bg);   color: var(--red);   }
-
-/* ── モードグリッド ── */
+/* モードグリッド */
 .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mode-btn.mode-master { grid-column: 1 / -1; }
 .mode-btn {
@@ -227,7 +150,7 @@ body {
   cursor: pointer; transition: all .15s; line-height: 1.3; text-align: center;
 }
 .mode-btn:active:not(:disabled) { transform: scale(.97); }
-.mode-btn.active { background: var(--blue-l); border-color: var(--blue); color: var(--blue); font-weight: 600; }
+.mode-btn.active  { background: var(--blue-l); border-color: var(--blue); color: var(--blue); font-weight: 600; }
 .mode-btn:disabled { opacity: .35; cursor: not-allowed; }
 .mode-btn.mode-review.active { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
 .mode-btn.mode-master.active { background: var(--purple-l); border-color: var(--purple); color: var(--purple); }
@@ -239,11 +162,7 @@ body {
 }
 
 /* バナー */
-.banner {
-  display: flex; align-items: center; gap: 8px;
-  border-radius: var(--r-md); padding: 10px 14px;
-  margin-bottom: 10px; font-size: 13px; font-weight: 500;
-}
+.banner { display: flex; align-items: center; gap: 8px; border-radius: var(--r-md); padding: 10px 14px; margin-bottom: 10px; font-size: 13px; font-weight: 500; }
 .banner-review { background: var(--amber-bg); border: 1px solid var(--amber-bd); color: var(--amber); }
 
 /* スタートボタン */
@@ -257,20 +176,14 @@ body {
 .btn-start:active   { background: var(--blue-d); transform: scale(.98); }
 .btn-start:disabled { background: var(--gray-bd); color: var(--gray-text); cursor: not-allowed; }
 
-/* ── クイズ画面 ── */
+/* クイズ画面 */
 .progress-area { padding-top: 12px; margin-bottom: 10px; }
-.progress-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.progress-top  { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .q-num { font-size: 18px; font-weight: 700; color: var(--blue); min-width: 36px; flex-shrink: 0; }
-.mode-tag {
-  font-size: 11px; font-weight: 600; padding: 3px 9px;
-  border-radius: var(--r-full); background: var(--blue-m); color: var(--blue-d); flex-shrink: 0;
-}
+.mode-tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: var(--r-full); background: var(--blue-m); color: var(--blue-d); flex-shrink: 0; }
 .progress-text { margin-left: auto; font-size: 13px; color: var(--gray-text); font-weight: 500; white-space: nowrap; }
-.progress-bar { height: 7px; background: var(--gray-bd); border-radius: var(--r-full); overflow: hidden; }
-.progress-fill {
-  height: 100%; background: linear-gradient(90deg, var(--blue), #60A5FA);
-  border-radius: var(--r-full); transition: width .4s ease; width: 0%;
-}
+.progress-bar  { height: 7px; background: var(--gray-bd); border-radius: var(--r-full); overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #60A5FA); border-radius: var(--r-full); transition: width .4s ease; width: 0%; }
 
 .q-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: var(--r-full); }
@@ -282,11 +195,7 @@ body {
   padding: 3px 10px; border-radius: var(--r-full); white-space: nowrap; flex-shrink: 0;
 }
 
-.q-card {
-  background: var(--white); border: 1px solid var(--gray-bd);
-  border-radius: var(--r-lg); padding: 16px 14px 12px;
-  margin-bottom: 10px; box-shadow: var(--shadow);
-}
+.q-card { background: var(--white); border: 1px solid var(--gray-bd); border-radius: var(--r-lg); padding: 16px 14px 12px; margin-bottom: 10px; box-shadow: var(--shadow); }
 .q-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
 .q-text { flex: 1; font-size: 18px; font-weight: 600; line-height: 1.6; word-break: break-word; }
 
@@ -300,29 +209,21 @@ body {
 .tts-btn.speaking { background: var(--blue-l); border-color: var(--blue); color: var(--blue); animation: pulse 1s ease infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
-/* 解説読み上げボタン — 問題カードのボタンより小さめ */
-.expl-tts-btn {
-  margin-left: auto;
-  width: 32px; height: 32px;
-  flex-shrink: 0;
-}
+.expl-tts-btn { margin-left: auto; width: 32px; height: 32px; flex-shrink: 0; }
 
 .review-label {
   display: flex; align-items: center; gap: 8px; cursor: pointer; padding-top: 10px;
-  border-top: 1px solid var(--gray-bd);
-  font-size: 14px; color: var(--gray-text); font-weight: 500; user-select: none;
+  border-top: 1px solid var(--gray-bd); font-size: 14px; color: var(--gray-text); font-weight: 500; user-select: none;
 }
 .review-label input[type="checkbox"] {
   appearance: none; -webkit-appearance: none;
   width: 20px; height: 20px; min-width: 20px;
   border: 2px solid var(--gray-bd); border-radius: 5px;
-  background: var(--white); cursor: pointer;
-  position: relative; flex-shrink: 0; transition: all .15s;
+  background: var(--white); cursor: pointer; position: relative; flex-shrink: 0; transition: all .15s;
 }
 .review-label input:checked { background: var(--amber); border-color: var(--amber); }
 .review-label input:checked::after {
-  content: ''; position: absolute;
-  top: 2px; left: 5px; width: 6px; height: 10px;
+  content: ''; position: absolute; top: 2px; left: 5px; width: 6px; height: 10px;
   border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg);
 }
 .review-label:has(input:checked) { color: var(--amber); font-weight: 600; }
@@ -367,11 +268,7 @@ body {
 }
 @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 .expl-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.result-icon {
-  width: 30px; height: 30px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 700; flex-shrink: 0;
-}
+.result-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
 .correct-icon { background: var(--green-bg); color: var(--green); }
 .wrong-icon   { background: var(--red-bg);   color: var(--red);   }
 .result-label { font-size: 16px; font-weight: 700; }
@@ -395,11 +292,8 @@ body {
 }
 .btn-next:active { background: var(--blue-d); transform: scale(.98); }
 
-/* ── 結果画面 ── */
-.result-card {
-  background: var(--white); border-radius: var(--r-xl);
-  padding: 36px 18px 24px; margin-top: 12px; text-align: center; box-shadow: var(--shadow-lg);
-}
+/* 結果画面 */
+.result-card { background: var(--white); border-radius: var(--r-xl); padding: 36px 18px 24px; margin-top: 12px; text-align: center; box-shadow: var(--shadow-lg); }
 .result-emoji { font-size: 56px; display: block; margin-bottom: 10px; }
 .result-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
 .result-score { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin-bottom: 6px; }
@@ -424,16 +318,14 @@ body {
   font-size: 16px; font-weight: 600; cursor: pointer; transition: all .15s;
 }
 .btn-primary  { background: var(--blue); color: #fff; border: none; }
-.btn-primary:active  { background: var(--blue-d); transform: scale(.98); }
+.btn-primary:active   { background: var(--blue-d); transform: scale(.98); }
 .btn-secondary { background: var(--white); color: var(--blue); border: 1.5px solid var(--blue); }
 .btn-secondary:active { background: var(--blue-l); transform: scale(.98); }
 
-/* アニメーション */
 .q-card.slide-in { animation: slideIn .2s ease; }
 @keyframes slideIn { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:translateX(0)} }
 .hidden { display: none !important; }
 
-/* PC */
 @media (min-width: 600px) {
   .main { padding: 16px 24px 80px; }
   .result-btns { flex-direction: row; justify-content: center; }

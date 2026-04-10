@@ -1,31 +1,24 @@
 /* ================================================================
-   USCPA Quiz App v13  —  app.js
-   v13 変更点:
-     ① 周完了バグ修正
-        ・markMastered での周完了チェックを「全問数との比較」から
-          「その論点の未正解問題がゼロになったか」で判定する方式に変更
-        ・復習ボックスに問題が残っていても周完了が正しくカウントされる
-        ・復習ボックスのバナー表示・ボタン有効化が正しく動くよう修正
-     ② 解説の音声読み上げボタンを追加
-     ③ questions.js 682問（Notes: 141→129問）に対応
+   USCPA Quiz App v16  —  app.js
+
+   ・初回起動時: 全TOPIC未選択（0問選択中）
+   ・2回目以降: localStorage から前回のTOPIC選択を復元
+   ・難易度フィルタ: 削除
+   ・問題データ: PP&E含む587問（Equity/Revenue削除済み）
 ================================================================ */
 
-
-/* ──────────────────────────────────────────
-   § 1  定数
-────────────────────────────────────────── */
 const KEY_PROGRESS = 'uscpa9_progress';
 const KEY_REVIEW   = 'uscpa9_review';
 const KEY_MASTERY  = 'uscpa9_mastery';
+const KEY_TOPICS   = 'uscpa_topics';
 
 const TOPIC_LABEL = {
-  'Bonds':                                          '債券 (Bonds)',
-  'Equity Transactions and Earnings Per Share':     '株式・EPS (Equity)',
-  'Intangible Assets':                              '無形資産 (Intangible Assets)',
-  'Lease Accounting for Lessee':                    'リース会計 (Lease)',
-  'Notes Receivable and Payable':                   '手形 (Notes)',
-  'Revenue from Contracts with Customers':          '収益認識 (Revenue)',
-  'Time Value of Money':                            '貨幣の時間価値 (TVM)',
+  'Bonds':                          '債券 (Bonds)',
+  'Intangible Assets':              '無形資産 (Intangible Assets)',
+  'Lease Accounting for Lessee':    'リース会計 (Lease)',
+  'Notes Receivable and Payable':   '手形 (Notes)',
+  'Property, Plant, and Equipment': '有形固定資産 (PP&E)',
+  'Time Value of Money':            '貨幣の時間価値 (TVM)',
 };
 
 const MODE_LABEL = {
@@ -35,41 +28,28 @@ const MODE_LABEL = {
   master:     'マスターするまで',
 };
 
-const DIFFICULTY_OPTIONS = [
-  { value: 'easy',   label: '⭐ easy',    color: 'green' },
-  { value: 'medium', label: '⭐⭐ medium', color: 'amber' },
-  { value: 'hard',   label: '⭐⭐⭐ hard',  color: 'red'   },
-];
-
-
-/* ──────────────────────────────────────────
-   § 2  アプリ状態
-────────────────────────────────────────── */
+/* ── state ── */
 const state = {
-  allQuestions:         [],
-  allTopics:            [],
-  activeQuestions:      [],
-  sessionQuestions:     [],
-  currentIndex:         0,
-  correctCount:         0,
-  skipCount:            0,
-  answered:             false,
-  selectedTopics:       [],
-  selectedDifficulties: ['easy', 'medium', 'hard'],
-  selectedMode:         'random',
-  masterQueue:          [],
-  masterDone:           new Set(),
-  isSpeaking:           false,
-  isExplSpeaking:       false,
-  reviewIds:            new Set(),
-  sessionWasAllDone:    false,
-  masteryByTopic:       new Map(),
+  allQuestions:      [],
+  allTopics:         [],
+  activeQuestions:   [],
+  sessionQuestions:  [],
+  currentIndex:      0,
+  correctCount:      0,
+  skipCount:         0,
+  answered:          false,
+  selectedTopics:    [],   // 初回は必ず空（全未選択）
+  selectedMode:      'random',
+  masterQueue:       [],
+  masterDone:        new Set(),
+  isSpeaking:        false,
+  isExplSpeaking:    false,
+  reviewIds:         new Set(),
+  sessionWasAllDone: false,
+  masteryByTopic:    new Map(),
 };
 
-
-/* ──────────────────────────────────────────
-   § 3  初期化
-────────────────────────────────────────── */
+/* ── 初期化 ── */
 document.addEventListener('DOMContentLoaded', () => {
   state.allQuestions = QUIZ_DATA;
 
@@ -81,24 +61,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  state.selectedTopics = [...state.allTopics];
+  // TOPICチェック状態を復元
+  // localStorage に保存値がない（初回）→ 空配列 = 全未選択
+  // 保存値がある → その配列を復元
+  state.selectedTopics = loadTopics();
 
   loadReviewIds();
   loadMastery();
 
   buildTopicList();
-  buildDifficultyFilter();
   buildModeButtons();
-
-  checkResumable();
   updateReviewBanner();
   updateSelectedCount();
 });
 
+/* ── TOPICの保存・復元 ── */
+function loadTopics() {
+  try {
+    const raw = localStorage.getItem(KEY_TOPICS);
+    if (raw === null) return [];                          // 初回: 全未選択
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(t => state.allTopics.includes(t)); // 存在するトピックのみ
+  } catch {
+    return [];
+  }
+}
 
-/* ──────────────────────────────────────────
-   § 4  ホーム画面 — トピックリスト
-────────────────────────────────────────── */
+function saveTopics() {
+  localStorage.setItem(KEY_TOPICS, JSON.stringify(state.selectedTopics));
+}
+
+/* ── トピックリスト構築 ── */
 function buildTopicList() {
   const container = document.getElementById('topicList');
   container.innerHTML = '';
@@ -144,69 +138,67 @@ function buildTopicList() {
 }
 
 function updateMasteryBadge(topic) {
-  const tData       = getTopicData(topic);
-  const currentDone = tData.currentKeys.size;
-  const laps        = tData.laps;
+  const tData = getTopicData(topic);
 
   const masteryEl = document.getElementById(`mastery-${topic}`);
   if (masteryEl) {
-    const correctEl = masteryEl.querySelector('.mastery-correct');
-    if (correctEl) correctEl.textContent = currentDone;
+    const el = masteryEl.querySelector('.mastery-correct');
+    if (el) el.textContent = tData.currentKeys.size;
   }
-
   const lapsEl = document.getElementById(`laps-${topic}`);
   if (lapsEl) {
-    const countEl = lapsEl.querySelector('.laps-count');
-    if (countEl) countEl.textContent = laps;
-    lapsEl.title = `${laps}周完了`;
+    const el = lapsEl.querySelector('.laps-count');
+    if (el) el.textContent = tData.laps;
+    lapsEl.title = `${tData.laps}周完了`;
   }
 }
 
+/* ── トピック選択 ── */
+function syncTopics() {
+  state.selectedTopics = [];
+  document.querySelectorAll('.topic-cb:checked').forEach(cb => {
+    state.selectedTopics.push(cb.value);
+  });
+  saveTopics();          // チェック変更のたびに保存
+  updateSelectedCount();
+}
 
-/* ──────────────────────────────────────────
-   § 4b  難易度フィルタ UI
-────────────────────────────────────────── */
-function buildDifficultyFilter() {
-  const container = document.getElementById('difficultyFilter');
-  if (!container) return;
-  container.innerHTML = '';
-
-  DIFFICULTY_OPTIONS.forEach(({ value, label, color }) => {
-    const isChecked = state.selectedDifficulties.includes(value);
-
-    const btn = document.createElement('button');
-    btn.type      = 'button';
-    btn.className = `diff-btn diff-${color}${isChecked ? ' active' : ''}`;
-    btn.dataset.diff = value;
-    btn.textContent  = label;
-
-    btn.addEventListener('click', () => {
-      const idx = state.selectedDifficulties.indexOf(value);
-      if (idx >= 0) {
-        if (state.selectedDifficulties.length === 1) return;
-        state.selectedDifficulties.splice(idx, 1);
-        btn.classList.remove('active');
-      } else {
-        state.selectedDifficulties.push(value);
-        btn.classList.add('active');
-      }
-      updateSelectedCount();
-    });
-
-    container.appendChild(btn);
+function syncCheckboxesToState() {
+  document.querySelectorAll('.topic-cb').forEach(cb => {
+    const checked = state.selectedTopics.includes(cb.value);
+    cb.checked = checked;
+    cb.closest('.topic-item')?.classList.toggle('checked', checked);
   });
 }
 
-function matchesDifficulty(q) {
-  if (state.selectedDifficulties.length === 0) return true;
-  const tags = String(q.tag || '').split(',').map(t => t.trim());
-  return state.selectedDifficulties.some(d => tags.includes(d));
+function checkAll(on) {
+  state.selectedTopics = on ? [...state.allTopics] : [];
+  syncCheckboxesToState();
+  saveTopics();          // 全選択・全解除でも保存
+  updateSelectedCount();
 }
 
+/* ── アクティブ問題リスト ── */
+function buildActiveQuestions() {
+  // selectedTopics が空なら0問（未選択 = 出題なし）
+  if (state.selectedTopics.length === 0) {
+    state.activeQuestions = [];
+    return;
+  }
+  state.activeQuestions = state.allQuestions.filter(q =>
+    state.selectedTopics.includes(q.topic)
+  );
+}
 
-/* ──────────────────────────────────────────
-   § 5  論点データのヘルパー
-────────────────────────────────────────── */
+function updateSelectedCount() {
+  buildActiveQuestions();
+  const el = document.getElementById('selectedCount');
+  if (el) el.textContent = state.activeQuestions.length;
+  const btn = document.getElementById('btnStart');
+  if (btn) btn.disabled = (state.activeQuestions.length === 0 && state.selectedMode !== 'review');
+}
+
+/* ── 論点データ ── */
 function getTopicData(topic) {
   if (!state.masteryByTopic.has(topic)) {
     state.masteryByTopic.set(topic, { laps: 0, currentKeys: new Set() });
@@ -224,18 +216,14 @@ function getMasteredKeys() {
 
 function buildPrioritizedPool(questions) {
   const masteredKeys = getMasteredKeys();
-
   const unseen = [];
   const review = [];
 
   for (const q of questions) {
-    const key        = reviewKey(q);
-    const isMastered = masteredKeys.has(key);
-    const inReview   = isReviewed(q);
-
-    if (inReview) {
+    const key = reviewKey(q);
+    if (isReviewed(q)) {
       review.push(q);
-    } else if (!isMastered) {
+    } else if (!masteredKeys.has(key)) {
       unseen.push(q);
     }
   }
@@ -245,10 +233,7 @@ function buildPrioritizedPool(questions) {
   return { pool: questions, allDone: true };
 }
 
-
-/* ──────────────────────────────────────────
-   § 6  localStorage — 論点進捗
-────────────────────────────────────────── */
+/* ── 進捗 ── */
 function loadMastery() {
   try {
     const raw = localStorage.getItem(KEY_MASTERY);
@@ -269,24 +254,11 @@ function loadMastery() {
 function saveMastery() {
   const obj = {};
   for (const [topic, data] of state.masteryByTopic.entries()) {
-    obj[topic] = {
-      laps:        data.laps,
-      currentKeys: [...data.currentKeys],
-    };
+    obj[topic] = { laps: data.laps, currentKeys: [...data.currentKeys] };
   }
   localStorage.setItem(KEY_MASTERY, JSON.stringify(obj));
 }
 
-/*
- * ▼ 周完了バグ修正（v13）
- *
- * 旧ロジック: currentKeys.size >= totalInTopic で周完了判定
- *   → 復習ボックスに問題が残っているとそれらは currentKeys に入らないため
- *     totalInTopic に永遠に届かず周完了にならなかった
- *
- * 新ロジック:「未正解 & 復習ボックス外の問題がゼロ」になったら周完了
- *   → 復習ボックスの問題は周完了判定から除外して自然に一周を完了できる
- */
 function markMastered(q) {
   const topic = q.topic;
   const key   = reviewKey(q);
@@ -294,9 +266,8 @@ function markMastered(q) {
 
   tData.currentKeys.add(key);
 
-  // 周完了チェック: その論点で「未正解かつ復習ボックス外」の問題がゼロになったら1周完了
-  const topicQuestions = state.allQuestions.filter(x => x.topic === topic);
-  const remaining = topicQuestions.filter(x => {
+  const topicQs   = state.allQuestions.filter(x => x.topic === topic);
+  const remaining = topicQs.filter(x => {
     const k = reviewKey(x);
     return !tData.currentKeys.has(k) && !state.reviewIds.has(k);
   });
@@ -309,7 +280,6 @@ function markMastered(q) {
   saveMastery();
   updateMasteryBadge(topic);
 
-  // 正解したら復習ボックスから除外
   if (isReviewed(q)) {
     removeReview(q);
     updateReviewBanner();
@@ -319,31 +289,23 @@ function markMastered(q) {
 function updateTopicProgressBadge(q) {
   const badge = document.getElementById('topicProgressBadge');
   if (!badge || !q) { if (badge) badge.textContent = ''; return; }
-
   const total    = state.allQuestions.filter(x => x.topic === q.topic).length;
   const tData    = getTopicData(q.topic);
-  const currentN = tData.currentKeys.size;
-  const laps     = tData.laps;
-
-  badge.textContent = `${currentN} / ${total}  🔄${laps}`;
+  badge.textContent = `${tData.currentKeys.size} / ${total}  🔄${tData.laps}`;
 }
 
-
-/* ──────────────────────────────────────────
-   § 7  論点リセット
-────────────────────────────────────────── */
+/* ── リセット ── */
 function resetTopic(event, topic) {
   event.preventDefault();
   event.stopPropagation();
-
   const label = TOPIC_LABEL[topic] || topic;
   if (!confirm(`「${label}」の周回数・進捗・復習ボックスをすべてリセットしますか？`)) return;
 
   state.masteryByTopic.set(topic, { laps: 0, currentKeys: new Set() });
   saveMastery();
 
-  const keysToDelete = [...state.reviewIds].filter(k => k.startsWith(`${topic}::`));
-  keysToDelete.forEach(k => state.reviewIds.delete(k));
+  [...state.reviewIds].filter(k => k.startsWith(`${topic}::`))
+    .forEach(k => state.reviewIds.delete(k));
   saveReviewIds();
 
   updateMasteryBadge(topic);
@@ -352,53 +314,7 @@ function resetTopic(event, topic) {
   syncCheckboxesToState();
 }
 
-
-/* ──────────────────────────────────────────
-   § 8  トピック選択 / アクティブ問題リスト
-────────────────────────────────────────── */
-function syncTopics() {
-  state.selectedTopics = [];
-  document.querySelectorAll('.topic-cb:checked').forEach(cb => {
-    state.selectedTopics.push(cb.value);
-  });
-  updateSelectedCount();
-  checkResumable();
-}
-
-function syncCheckboxesToState() {
-  document.querySelectorAll('.topic-cb').forEach(cb => {
-    const checked = state.selectedTopics.includes(cb.value);
-    cb.checked = checked;
-    cb.closest('.topic-item')?.classList.toggle('checked', checked);
-  });
-}
-
-function checkAll(on) {
-  state.selectedTopics = on ? [...state.allTopics] : [];
-  syncCheckboxesToState();
-  updateSelectedCount();
-  checkResumable();
-}
-
-function buildActiveQuestions() {
-  state.activeQuestions = state.allQuestions.filter(q =>
-    (state.selectedTopics.length === 0 || state.selectedTopics.includes(q.topic)) &&
-    matchesDifficulty(q)
-  );
-}
-
-function updateSelectedCount() {
-  buildActiveQuestions();
-  const el  = document.getElementById('selectedCount');
-  if (el) el.textContent = state.activeQuestions.length;
-  const btn = document.getElementById('btnStart');
-  if (btn) btn.disabled = (state.activeQuestions.length === 0 && state.selectedMode !== 'review');
-}
-
-
-/* ──────────────────────────────────────────
-   § 9  モードボタン
-────────────────────────────────────────── */
+/* ── モード ── */
 function buildModeButtons() {
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -415,12 +331,9 @@ function setMode(mode) {
   });
 }
 
-
-/* ──────────────────────────────────────────
-   § 10  localStorage — セッション進捗
-────────────────────────────────────────── */
+/* ── localStorage: セッション進捗 ── */
 function saveProgress() {
-  const data = {
+  localStorage.setItem(KEY_PROGRESS, JSON.stringify({
     sessionQuestions: state.sessionQuestions,
     currentIndex:     state.currentIndex,
     correctCount:     state.correctCount,
@@ -429,62 +342,30 @@ function saveProgress() {
     selectedMode:     state.selectedMode,
     masterQueue:      state.masterQueue,
     masterDoneKeys:   [...state.masterDone],
-  };
-  localStorage.setItem(KEY_PROGRESS, JSON.stringify(data));
-}
-
-function loadProgress() {
-  try {
-    const raw = localStorage.getItem(KEY_PROGRESS);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    localStorage.removeItem(KEY_PROGRESS);
-    return null;
-  }
+  }));
 }
 
 function clearProgress() {
   localStorage.removeItem(KEY_PROGRESS);
 }
 
-function checkResumable() {
-  // 前回の続き機能は削除済み
-}
-
-
-/* ──────────────────────────────────────────
-   § 11  localStorage — 復習ボックス
-────────────────────────────────────────── */
-function reviewKey(q) {
-  return `${q.topic}::${q.id}`;
-}
+/* ── localStorage: 復習ボックス ── */
+function reviewKey(q) { return `${q.topic}::${q.id}`; }
 
 function loadReviewIds() {
   try {
     const raw = localStorage.getItem(KEY_REVIEW);
     state.reviewIds = new Set(raw ? JSON.parse(raw) : []);
-  } catch {
-    state.reviewIds = new Set();
-  }
+  } catch { state.reviewIds = new Set(); }
 }
 
 function saveReviewIds() {
   localStorage.setItem(KEY_REVIEW, JSON.stringify([...state.reviewIds]));
 }
 
-function addReview(q) {
-  state.reviewIds.add(reviewKey(q));
-  saveReviewIds();
-}
-
-function removeReview(q) {
-  state.reviewIds.delete(reviewKey(q));
-  saveReviewIds();
-}
-
-function isReviewed(q) {
-  return state.reviewIds.has(reviewKey(q));
-}
+function addReview(q)    { state.reviewIds.add(reviewKey(q));    saveReviewIds(); }
+function removeReview(q) { state.reviewIds.delete(reviewKey(q)); saveReviewIds(); }
+function isReviewed(q)   { return state.reviewIds.has(reviewKey(q)); }
 
 function updateReviewBanner() {
   const count  = state.reviewIds.size;
@@ -493,7 +374,6 @@ function updateReviewBanner() {
   const text   = document.getElementById('reviewText');
 
   if (text) text.textContent = `復習ボックスに ${count} 問あります`;
-
   if (count > 0) {
     if (btn) btn.disabled = false;
     banner?.classList.remove('hidden');
@@ -514,14 +394,11 @@ function onReviewCbChange() {
   const cb = document.getElementById('reviewCb');
   const q  = getCurrentQ();
   if (!q) return;
-  if (cb.checked) { addReview(q); } else { removeReview(q); }
+  if (cb.checked) addReview(q); else removeReview(q);
   updateReviewBanner();
 }
 
-
-/* ──────────────────────────────────────────
-   § 12  クイズ開始
-────────────────────────────────────────── */
+/* ── クイズ開始 ── */
 function startQuiz() {
   speechSynthesis.cancel();
   state.answered          = false;
@@ -561,22 +438,16 @@ function startQuiz() {
 
   const { pool, allDone } = buildPrioritizedPool(state.activeQuestions);
   state.sessionWasAllDone = allDone;
-
   state.currentIndex = 0;
   state.correctCount = 0;
   state.skipCount    = 0;
 
-  const base = state.selectedMode === 'sequential'
-    ? [...pool]
-    : shuffle([...pool]);
-
+  const base = state.selectedMode === 'sequential' ? [...pool] : shuffle([...pool]);
   state.sessionQuestions = applyCountLimit(base);
   startSession();
 }
 
-function applyCountLimit(arr) {
-  return arr.length > 5 ? arr.slice(0, 5) : arr;
-}
+function applyCountLimit(arr) { return arr.length > 5 ? arr.slice(0, 5) : arr; }
 
 function startSession() {
   updateModeTag();
@@ -585,10 +456,7 @@ function startSession() {
   showQuestion();
 }
 
-
-/* ──────────────────────────────────────────
-   § 13  問題表示
-────────────────────────────────────────── */
+/* ── 問題表示 ── */
 function showQuestion() {
   const q = getCurrentQ();
   if (!q) { showResult(); return; }
@@ -598,24 +466,9 @@ function showQuestion() {
 
   document.getElementById('qText').textContent = q.question;
 
-  const catLabel = q.category === 'vocab'   ? '英単語' :
-                   q.category === 'concept' ? '概念'   : q.category;
+  const catLabel = q.category === 'vocab' ? '英単語' : q.category === 'concept' ? '概念' : q.category;
   document.getElementById('tagCat').textContent   = catLabel;
   document.getElementById('tagTopic').textContent = TOPIC_LABEL[q.topic] || q.topic;
-
-  const diffTag = document.getElementById('tagDiff');
-  if (diffTag) {
-    const tags = String(q.tag || '').split(',').map(t => t.trim());
-    const diff = ['easy', 'medium', 'hard'].find(d => tags.includes(d)) || '';
-    const diffLabel = { easy: '⭐ easy', medium: '⭐⭐ medium', hard: '⭐⭐⭐ hard' };
-    if (diff) {
-      diffTag.textContent   = diffLabel[diff];
-      diffTag.className     = `tag tag-diff tag-diff-${diff}`;
-      diffTag.style.display = '';
-    } else {
-      diffTag.style.display = 'none';
-    }
-  }
 
   updateTopicProgressBadge(q);
   updateProgress();
@@ -652,32 +505,22 @@ function getCurrentQ() {
   return state.sessionQuestions[state.currentIndex] ?? null;
 }
 
-
-/* ──────────────────────────────────────────
-   § 14  選択肢の描画
-────────────────────────────────────────── */
+/* ── 選択肢 ── */
 function renderChoices(choices) {
   const container = document.getElementById('choices');
   container.innerHTML = '';
   const labels = ['A', 'B', 'C', 'D'];
-
   choices.forEach((choice, i) => {
     const btn = document.createElement('button');
     btn.className  = 'choice-btn';
     btn.dataset.ok = choice.ok;
-    btn.innerHTML  = `
-      <span class="choice-label">${labels[i]}</span>
-      <span class="choice-text">${escHtml(choice.text)}</span>
-    `;
+    btn.innerHTML  = `<span class="choice-label">${labels[i]}</span><span class="choice-text">${escHtml(choice.text)}</span>`;
     btn.addEventListener('click', () => onAnswer(btn, choice.ok));
     container.appendChild(btn);
   });
 }
 
-
-/* ──────────────────────────────────────────
-   § 15  回答処理
-────────────────────────────────────────── */
+/* ── 回答処理 ── */
 function onAnswer(selectedBtn, isCorrect) {
   if (state.answered) return;
   state.answered = true;
@@ -690,15 +533,10 @@ function onAnswer(selectedBtn, isCorrect) {
   if (isCorrect) {
     state.correctCount++;
     markMastered(q);
-    if (state.selectedMode === 'master') {
-      state.masterQueue.shift();
-      state.masterDone.add(key);
-    }
+    if (state.selectedMode === 'master') { state.masterQueue.shift(); state.masterDone.add(key); }
   } else {
     addReview(q);
-    if (state.selectedMode === 'master') {
-      state.masterQueue.push(state.masterQueue.shift());
-    }
+    if (state.selectedMode === 'master') state.masterQueue.push(state.masterQueue.shift());
   }
 
   updateTopicProgressBadge(q);
@@ -715,103 +553,66 @@ function onAnswer(selectedBtn, isCorrect) {
   showExplanation(isCorrect, q);
 }
 
-
-/* ──────────────────────────────────────────
-   § 16  解説カード表示
-────────────────────────────────────────── */
+/* ── 解説 ── */
 function showExplanation(isCorrect, q) {
-  const card  = document.getElementById('explanation');
   const icon  = document.getElementById('resultIcon');
   const label = document.getElementById('resultLabel');
   const text  = document.getElementById('explText');
   const info  = document.getElementById('masterInfo');
 
   if (isCorrect) {
-    icon.textContent  = '✓';
-    icon.className    = 'result-icon correct-icon';
-    label.textContent = '正解！';
-    label.className   = 'result-label correct-label';
+    icon.textContent  = '✓'; icon.className    = 'result-icon correct-icon';
+    label.textContent = '正解！'; label.className   = 'result-label correct-label';
   } else {
-    icon.textContent  = '✗';
-    icon.className    = 'result-icon wrong-icon';
-    label.textContent = '不正解（復習ボックスに追加）';
-    label.className   = 'result-label wrong-label';
+    icon.textContent  = '✗'; icon.className    = 'result-icon wrong-icon';
+    label.textContent = '不正解（復習ボックスに追加）'; label.className = 'result-label wrong-label';
   }
 
   text.textContent = q.explanation || '解説なし';
 
   if (state.selectedMode === 'master') {
     const rem = state.masterQueue.length;
-    info.textContent = rem > 0
-      ? `残り ${rem} 問（間違えた問題は再出題されます）`
-      : '🎉 全問正解！次で終了します';
+    info.textContent = rem > 0 ? `残り ${rem} 問（間違えた問題は再出題されます）` : '🎉 全問正解！次で終了します';
     info.classList.remove('hidden');
   } else {
     info.classList.add('hidden');
   }
 
   const explTtsBtn = document.getElementById('explTtsBtn');
-  if (explTtsBtn) {
-    state.isExplSpeaking = false;
-    explTtsBtn.classList.remove('speaking');
-  }
+  if (explTtsBtn) { state.isExplSpeaking = false; explTtsBtn.classList.remove('speaking'); }
 
-  card.classList.remove('hidden');
-  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+  document.getElementById('explanation').classList.remove('hidden');
+  setTimeout(() => document.getElementById('explanation').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
 }
 
-
-/* ──────────────────────────────────────────
-   § 17  次の問題 / スキップ
-────────────────────────────────────────── */
+/* ── 次の問題 / スキップ ── */
 function nextQuestion() {
   speechSynthesis.cancel();
   state.isExplSpeaking = false;
 
   if (state.selectedMode === 'master') {
-    if (state.masterQueue.length === 0) {
-      clearProgress(); updateReviewBanner(); showResult();
-      return;
-    }
-    showQuestion();
-    return;
+    if (state.masterQueue.length === 0) { clearProgress(); updateReviewBanner(); showResult(); return; }
+    showQuestion(); return;
   }
   state.currentIndex++;
-  if (state.currentIndex >= state.sessionQuestions.length) {
-    clearProgress(); updateReviewBanner(); showResult();
-    return;
-  }
+  if (state.currentIndex >= state.sessionQuestions.length) { clearProgress(); updateReviewBanner(); showResult(); return; }
   showQuestion();
 }
 
 function skipQuestion() {
   if (state.answered) return;
   const q = getCurrentQ();
-  if (q) {
-    state.skipCount++;
-    addReview(q);
-    syncReviewCheckbox();
-    updateReviewBanner();
-  }
+  if (q) { state.skipCount++; addReview(q); syncReviewCheckbox(); updateReviewBanner(); }
   if (state.selectedMode === 'master') {
-    if (state.masterQueue.length > 0) {
-      state.masterQueue.push(state.masterQueue.shift());
-    }
-    showQuestion();
-    return;
+    if (state.masterQueue.length > 0) state.masterQueue.push(state.masterQueue.shift());
+    showQuestion(); return;
   }
   state.currentIndex++;
-  if (state.currentIndex >= state.sessionQuestions.length) {
-    clearProgress(); updateReviewBanner(); showResult();
-    return;
-  }
+  if (state.currentIndex >= state.sessionQuestions.length) { clearProgress(); updateReviewBanner(); showResult(); return; }
   showQuestion();
 }
 
-
-/* ──────────────────────────────────────────
-   § 18  結果画面
-────────────────────────────────────────── */
+/* ── 結果画面 ── */
 function showResult() {
   const isMaster = state.selectedMode === 'master';
   const isReview = state.selectedMode === 'review';
@@ -829,34 +630,26 @@ function showResult() {
     document.getElementById('resultPct').textContent = '選択中の論点は全問正解済み 🎊';
     if (titleEl) titleEl.textContent = '一周完了！';
   } else {
-    document.getElementById('resultPct').textContent =
-      isMaster ? '全問マスター達成！' : `正答率 ${pct}%`;
+    document.getElementById('resultPct').textContent = isMaster ? '全問マスター達成！' : `正答率 ${pct}%`;
     if (titleEl) titleEl.textContent = isMaster ? '🎯 マスター完了！' : 'クイズ完了！';
   }
 
   let emoji, msg;
-  if (allDone) {
-    emoji = '🎊'; msg = 'すべての問題に一度は正解しました！復習ボックスの問題を引き続き練習しましょう。';
-  } else if (isMaster) {
-    emoji = '🏆'; msg = 'すべての問題に正解しました！';
-  } else if (pct >= 90) {
-    emoji = '🏆'; msg = '素晴らしい！完璧に近い出来です。';
-  } else if (pct >= 70) {
-    emoji = '🎉'; msg = 'よくできました！着実に力がついています。';
-  } else if (pct >= 50) {
-    emoji = '📖'; msg = 'もう少し！苦手な問題を復習しましょう。';
-  } else {
-    emoji = '💪'; msg = 'まだまだこれから！繰り返しが力になります。';
-  }
+  if (allDone)       { emoji = '🎊'; msg = 'すべての問題に一度は正解しました！復習ボックスの問題を引き続き練習しましょう。'; }
+  else if (isMaster) { emoji = '🏆'; msg = 'すべての問題に正解しました！'; }
+  else if (pct >= 90){ emoji = '🏆'; msg = '素晴らしい！完璧に近い出来です。'; }
+  else if (pct >= 70){ emoji = '🎉'; msg = 'よくできました！着実に力がついています。'; }
+  else if (pct >= 50){ emoji = '📖'; msg = 'もう少し！苦手な問題を復習しましょう。'; }
+  else               { emoji = '💪'; msg = 'まだまだこれから！繰り返しが力になります。'; }
 
   document.getElementById('resultEmoji').textContent  = emoji;
   document.getElementById('resultMsg').textContent    = msg;
   document.getElementById('scoreCorrect').textContent = correct;
   document.getElementById('scoreTotal').textContent   = total;
 
+  const cnt = state.reviewIds.size;
   const reviewInfo  = document.getElementById('resultReviewInfo');
   const reviewCount = document.getElementById('resultReviewCount');
-  const cnt = state.reviewIds.size;
   if (cnt > 0) {
     let txt = `${cnt} 問が復習ボックスに入っています`;
     if (state.skipCount > 0) txt += `（スキップ ${state.skipCount} 問を含む）`;
@@ -872,9 +665,7 @@ function showResult() {
     btns.appendChild(makeBtn('primary',   '⭐ もう一度（復習）', () => startQuiz()));
     btns.appendChild(makeBtn('secondary', 'トップへ',            () => goHome()));
   } else if (allDone) {
-    if (cnt > 0) {
-      btns.appendChild(makeBtn('primary', '⭐ 復習ボックスを解く', () => { setMode('review'); startQuiz(); }));
-    }
+    if (cnt > 0) btns.appendChild(makeBtn('primary', '⭐ 復習ボックスを解く', () => { setMode('review'); startQuiz(); }));
     btns.appendChild(makeBtn('secondary', 'トップへ', () => goHome()));
   } else {
     btns.appendChild(makeBtn('primary',   '同じ問題をもう一度', () => replaySession()));
@@ -895,41 +686,27 @@ function makeBtn(type, label, onClick) {
 
 function replaySession() {
   speechSynthesis.cancel();
-  state.answered       = false;
-  state.isSpeaking     = false;
-  state.isExplSpeaking = false;
+  state.answered = false; state.isSpeaking = false; state.isExplSpeaking = false;
 
   if (state.selectedMode === 'master') {
     buildActiveQuestions();
-    state.currentIndex     = 0;
-    state.correctCount     = 0;
-    state.skipCount        = 0;
-    state.masterQueue      = shuffle([...state.activeQuestions]);
-    state.masterDone       = new Set();
+    state.currentIndex = 0; state.correctCount = 0; state.skipCount = 0;
+    state.masterQueue  = shuffle([...state.activeQuestions]);
+    state.masterDone   = new Set();
     state.sessionQuestions = state.masterQueue;
   } else {
-    state.currentIndex     = 0;
-    state.correctCount     = 0;
-    state.skipCount        = 0;
+    state.currentIndex = 0; state.correctCount = 0; state.skipCount = 0;
     state.sessionQuestions = shuffle([...state.sessionQuestions]);
   }
-
-  updateModeTag();
-  updateHeaderScore();
-  showScreen('screenQuiz');
-  showQuestion();
+  updateModeTag(); updateHeaderScore(); showScreen('screenQuiz'); showQuestion();
 }
 
-
-/* ──────────────────────────────────────────
-   § 19  進捗バー・スコア・モードタグ
-────────────────────────────────────────── */
+/* ── 進捗バー・スコア ── */
 function updateProgress() {
   let current, total;
   if (state.selectedMode === 'master') {
-    const all  = state.activeQuestions.length;
-    const done = all - state.masterQueue.length;
-    current = done + 1;
+    const all = state.activeQuestions.length;
+    current = all - state.masterQueue.length + 1;
     total   = all;
   } else {
     current = state.currentIndex + 1;
@@ -954,113 +731,65 @@ function updateModeTag() {
   if (tag) tag.textContent = MODE_LABEL[state.selectedMode] || '';
 }
 
-
-/* ──────────────────────────────────────────
-   § 20  画面管理・ホームボタン
-────────────────────────────────────────── */
+/* ── 画面管理 ── */
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.toggle('hidden', s.id !== id);
-  });
-  document.getElementById('headerScore')
-    ?.classList.toggle('hidden', id !== 'screenQuiz');
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
+  document.getElementById('headerScore')?.classList.toggle('hidden', id !== 'screenQuiz');
 }
 
 function goHome() {
   speechSynthesis.cancel();
-  state.isSpeaking     = false;
-  state.isExplSpeaking = false;
-  checkResumable();
-  updateReviewBanner();
-  updateSelectedCount();
-  buildTopicList();
-  syncCheckboxesToState();
+  state.isSpeaking = false; state.isExplSpeaking = false;
+  updateReviewBanner(); updateSelectedCount();
+  buildTopicList(); syncCheckboxesToState();
   showScreen('screenStart');
 }
 
-
-/* ──────────────────────────────────────────
-   § 21  音声読み上げ — 問題文
-────────────────────────────────────────── */
+/* ── 音声読み上げ: 問題文 ── */
 function speak() {
   if (!('speechSynthesis' in window)) return;
   const btn = document.getElementById('ttsBtn');
-
   if (state.isSpeaking) {
-    speechSynthesis.cancel();
-    state.isSpeaking = false;
-    btn.classList.remove('speaking');
-    return;
+    speechSynthesis.cancel(); state.isSpeaking = false; btn.classList.remove('speaking'); return;
   }
-
   if (state.isExplSpeaking) {
-    speechSynthesis.cancel();
-    state.isExplSpeaking = false;
-    const explBtn = document.getElementById('explTtsBtn');
-    if (explBtn) explBtn.classList.remove('speaking');
+    speechSynthesis.cancel(); state.isExplSpeaking = false;
+    document.getElementById('explTtsBtn')?.classList.remove('speaking');
   }
-
   const q = getCurrentQ();
   if (!q) return;
-
   const tokens = splitLang(q.question);
   if (!tokens.length) return;
-
-  state.isSpeaking = true;
-  btn.classList.add('speaking');
-
-  speakTokens(tokens, () => {
-    state.isSpeaking = false;
-    btn.classList.remove('speaking');
-  });
+  state.isSpeaking = true; btn.classList.add('speaking');
+  speakTokens(tokens, () => { state.isSpeaking = false; btn.classList.remove('speaking'); });
 }
 
-
-/* ──────────────────────────────────────────
-   § 21b  音声読み上げ — 解説文
-────────────────────────────────────────── */
+/* ── 音声読み上げ: 解説文 ── */
 function speakExplanation() {
   if (!('speechSynthesis' in window)) return;
   const btn = document.getElementById('explTtsBtn');
   if (!btn) return;
-
   if (state.isExplSpeaking) {
-    speechSynthesis.cancel();
-    state.isExplSpeaking = false;
-    btn.classList.remove('speaking');
-    return;
+    speechSynthesis.cancel(); state.isExplSpeaking = false; btn.classList.remove('speaking'); return;
   }
-
   if (state.isSpeaking) {
-    speechSynthesis.cancel();
-    state.isSpeaking = false;
-    const qBtn = document.getElementById('ttsBtn');
-    if (qBtn) qBtn.classList.remove('speaking');
+    speechSynthesis.cancel(); state.isSpeaking = false;
+    document.getElementById('ttsBtn')?.classList.remove('speaking');
   }
-
   const text = document.getElementById('explText')?.textContent || '';
   if (!text) return;
-
   const tokens = splitLang(text);
   if (!tokens.length) return;
-
-  state.isExplSpeaking = true;
-  btn.classList.add('speaking');
-
-  speakTokens(tokens, () => {
-    state.isExplSpeaking = false;
-    btn.classList.remove('speaking');
-  });
+  state.isExplSpeaking = true; btn.classList.add('speaking');
+  speakTokens(tokens, () => { state.isExplSpeaking = false; btn.classList.remove('speaking'); });
 }
 
 function speakTokens(tokens, onEnd) {
   tokens.forEach((tok, i) => {
-    const utt  = new SpeechSynthesisUtterance(tok.text);
-    utt.lang   = tok.isEn ? 'en-US' : 'ja-JP';
-    utt.rate   = tok.isEn ? 0.85 : 0.9;
-    if (i === tokens.length - 1) {
-      utt.onend = utt.onerror = onEnd;
-    }
+    const utt = new SpeechSynthesisUtterance(tok.text);
+    utt.lang  = tok.isEn ? 'en-US' : 'ja-JP';
+    utt.rate  = tok.isEn ? 0.85 : 0.9;
+    if (i === tokens.length - 1) utt.onend = utt.onerror = onEnd;
     speechSynthesis.speak(utt);
   });
 }
@@ -1078,10 +807,7 @@ function splitLang(text) {
   return tokens;
 }
 
-
-/* ──────────────────────────────────────────
-   § 22  ユーティリティ
-────────────────────────────────────────── */
+/* ── ユーティリティ ── */
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -1092,18 +818,13 @@ function shuffle(arr) {
 }
 
 function escHtml(s) {
-  return String(s || '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function esc(s) {
-  return String(s || '').replace(/"/g, '&quot;');
-}
+function esc(s) { return String(s || '').replace(/"/g, '&quot;'); }
 
 function arrEq(a, b) {
-  if (!Array.isArray(a) || !Array.isArray(b)) return false;
-  if (a.length !== b.length) return false;
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
   const sa = [...a].sort(), sb = [...b].sort();
   return sa.every((v, i) => v === sb[i]);
 }

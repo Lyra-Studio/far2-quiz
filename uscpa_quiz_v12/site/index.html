@@ -9,7 +9,6 @@
 </head>
 <body>
 
-<!-- ヘッダー -->
 <header class="header">
   <div class="header-inner">
     <div class="header-left">
@@ -34,7 +33,7 @@
 
 <main class="main">
 
-  <!-- ══ スタート画面 ══ -->
+  <!-- スタート画面 -->
   <div class="screen" id="screenStart">
     <div class="start-card">
       <div class="start-icon">📚</div>
@@ -45,7 +44,6 @@
         <span id="selectedCount">0</span>問が選択中
       </div>
 
-      <!-- 出題範囲 -->
       <section class="section">
         <div class="section-header">
           <span class="section-title">出題範囲（Topic）</span>
@@ -58,13 +56,6 @@
         <div id="topicList"></div>
       </section>
 
-      <!-- 難易度フィルタ（新追加） -->
-      <section class="section">
-        <div class="section-title">難易度（Difficulty）</div>
-        <div id="difficultyFilter" class="diff-filter"></div>
-      </section>
-
-      <!-- 出題モード -->
       <section class="section">
         <div class="section-title">出題モード</div>
         <div class="mode-grid">
@@ -85,7 +76,7 @@
     </div>
   </div>
 
-  <!-- ══ クイズ画面 ══ -->
+  <!-- クイズ画面 -->
   <div class="screen hidden" id="screenQuiz">
 
     <div class="progress-area">
@@ -102,7 +93,6 @@
     <div class="q-meta">
       <span class="tag tag-cat" id="tagCat">vocab</span>
       <span class="tag tag-topic" id="tagTopic">Topic</span>
-      <span class="tag tag-diff" id="tagDiff" style="display:none"></span>
       <span class="topic-progress-badge" id="topicProgressBadge"></span>
     </div>
 
@@ -148,7 +138,7 @@
 
   </div>
 
-  <!-- ══ 結果画面 ══ -->
+  <!-- 結果画面 -->
   <div class="screen hidden" id="screenResult">
     <div class="result-card">
       <div class="result-emoji" id="resultEmoji">🎉</div>
