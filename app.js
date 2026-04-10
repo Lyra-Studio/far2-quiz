@@ -1,16 +1,19 @@
 /* ================================================================
-   USCPA Quiz App v14  —  app.js
-   v14 変更点:
-     ① TOPICチェック状態の保存・復元
-        ・KEY_TOPICS = 'uscpa_topics' で localStorage に保存
-        ・初回（保存なし）: 全TOPIC未選択で起動
-        ・2回目以降: 前回の選択状態を復元
-        ・チェック変更のたびに即座に保存
-     ② 論点更新
-        ・Equity / Revenue 削除
-        ・Property, Plant, and Equipment 新規追加
-     ③ 周完了バグ修正（v13から継続）
-     ④ 解説の音声読み上げボタン（v13から継続）
+   USCPA Quiz App v15  —  app.js
+
+   【前回v14からの修正点】
+   ① buildActiveQuestions のバグ修正（根本原因）
+      旧: selectedTopics.length === 0 → 全問を返していた（全未選択でも全問出てしまう）
+      新: selectedTopics.length === 0 → 0問を返す（未選択なら出題なし）
+      → これにより「初回は0問選択中・スタート不可」が正しく動く
+
+   ② TOPIC初期状態
+      localStorage に保存値なし → 空配列（全TOPIC未選択）
+      localStorage に保存値あり → その配列を復元
+
+   ③ チェック変更のたびに localStorage へ保存（syncTopics / checkAll）
+
+   ④ console.log デバッグ追加（初回起動時・localStorage読み込み時）
 ================================================================ */
 
 
@@ -20,7 +23,7 @@
 const KEY_PROGRESS = 'uscpa9_progress';
 const KEY_REVIEW   = 'uscpa9_review';
 const KEY_MASTERY  = 'uscpa9_mastery';
-const KEY_TOPICS   = 'uscpa_topics';   // ← v14新追加: TOPICチェック状態
+const KEY_TOPICS   = 'uscpa_topics';   // TOPICチェック状態保存キー
 
 const TOPIC_LABEL = {
   'Bonds':                            '債券 (Bonds)',
@@ -57,7 +60,7 @@ const state = {
   correctCount:         0,
   skipCount:            0,
   answered:             false,
-  selectedTopics:       [],   // ← 初回は空。loadTopics()で復元
+  selectedTopics:       [],   // 初回は空。loadTopics() で上書き
   selectedDifficulties: ['easy', 'medium', 'hard'],
   selectedMode:         'random',
   masterQueue:          [],
@@ -76,6 +79,7 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
   state.allQuestions = QUIZ_DATA;
 
+  // トピック一覧を登場順で収集
   const seen = new Set();
   for (const q of state.allQuestions) {
     if (q.topic && !seen.has(q.topic)) {
@@ -84,9 +88,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ▼ v14: TOPICチェック状態をlocalStorageから復元
-  //   保存データがなければ全TOPIC未選択（空配列）
+  // ── デバッグログ ──────────────────────
+  console.log('[QUIZ] 問題データ読み込み完了:', state.allQuestions.length, '問');
+  const countByTopic = {};
+  for (const q of state.allQuestions) {
+    countByTopic[q.topic] = (countByTopic[q.topic] || 0) + 1;
+  }
+  console.log('[QUIZ] トピック別件数:', countByTopic);
+  // ─────────────────────────────────────
+
+  // TOPICチェック状態を localStorage から復元
+  // 保存なし（初回）→ 空配列（全未選択）
+  // 保存あり → その内容を復元
   state.selectedTopics = loadTopics();
+
+  // ── デバッグログ ──────────────────────
+  const rawTopics = localStorage.getItem(KEY_TOPICS);
+  console.log('[QUIZ] localStorage KEY_TOPICS 生値:', rawTopics);
+  console.log('[QUIZ] 初期 selectedTopics:', state.selectedTopics);
+  // ─────────────────────────────────────
 
   loadReviewIds();
   loadMastery();
@@ -102,37 +122,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ──────────────────────────────────────────
-   § 3b  TOPICチェック状態の保存・復元（v14新追加）
+   § 3b  TOPICチェック状態の保存・復元
 ────────────────────────────────────────── */
 
 /**
  * localStorageからTOPIC選択状態を読み込む
- * 保存データがない場合（初回）は空配列を返す → 全TOPIC未選択
- * 保存データがある場合はその配列を返す → 前回の状態を復元
+ *
+ * 【初回（保存なし）】
+ *   localStorage.getItem(KEY_TOPICS) === null
+ *   → 空配列を返す → state.selectedTopics = [] → 全TOPIC未選択
+ *
+ * 【2回目以降（保存あり）】
+ *   保存された配列を返す → 前回の選択状態を復元
  */
 function loadTopics() {
   try {
     const raw = localStorage.getItem(KEY_TOPICS);
+
+    // null = キー自体が存在しない = 初回
     if (raw === null) {
-      // 初回: 保存データなし → 全TOPIC未選択
+      console.log('[QUIZ] loadTopics: 初回アクセス → 全TOPIC未選択');
       return [];
     }
+
     const parsed = JSON.parse(raw);
-    // 配列でなければ初期化
-    if (!Array.isArray(parsed)) return [];
-    // allTopics に存在するものだけ残す（古いデータ対策）
-    return parsed.filter(t => state.allTopics.includes(t));
-  } catch {
+    if (!Array.isArray(parsed)) {
+      console.log('[QUIZ] loadTopics: 保存データが不正 → 全TOPIC未選択');
+      return [];
+    }
+
+    // allTopics に存在するトピックだけ残す（論点変更後の古いデータ対策）
+    const filtered = parsed.filter(t => state.allTopics.includes(t));
+    console.log('[QUIZ] loadTopics: 復元成功 →', filtered);
+    return filtered;
+
+  } catch (e) {
+    console.log('[QUIZ] loadTopics: エラー →', e);
     return [];
   }
 }
 
 /**
  * 現在の selectedTopics を localStorage に保存
- * チェック変更のたびに呼ぶ
+ * チェック変更・全選択・全解除のたびに呼ぶ
  */
 function saveTopics() {
   localStorage.setItem(KEY_TOPICS, JSON.stringify(state.selectedTopics));
+  console.log('[QUIZ] saveTopics: 保存 →', state.selectedTopics);
 }
 
 
@@ -176,7 +212,7 @@ function buildTopicList() {
 
     el.querySelector('input').addEventListener('change', e => {
       el.classList.toggle('checked', e.target.checked);
-      syncTopics();   // ← syncTopics内でsaveTopics()も呼ぶ
+      syncTopics();
     });
 
     container.appendChild(el);
@@ -323,7 +359,6 @@ function markMastered(q) {
 
   tData.currentKeys.add(key);
 
-  // 周完了チェック: 未正解&復習ボックス外がゼロになったら1周完了
   const topicQuestions = state.allQuestions.filter(x => x.topic === topic);
   const remaining = topicQuestions.filter(x => {
     const k = reviewKey(x);
@@ -389,7 +424,7 @@ function syncTopics() {
   document.querySelectorAll('.topic-cb:checked').forEach(cb => {
     state.selectedTopics.push(cb.value);
   });
-  saveTopics();          // ← v14: チェック変更のたびに保存
+  saveTopics();          // チェック変更のたびに即座に保存
   updateSelectedCount();
   checkResumable();
 }
@@ -405,15 +440,32 @@ function syncCheckboxesToState() {
 function checkAll(on) {
   state.selectedTopics = on ? [...state.allTopics] : [];
   syncCheckboxesToState();
-  saveTopics();          // ← v14: 全選択/全解除でも保存
+  saveTopics();          // 全選択・全解除でも保存
   updateSelectedCount();
   checkResumable();
 }
 
+/**
+ * ▼ 修正ポイント（v15最重要）
+ *
+ * 旧コード（バグあり）:
+ *   (state.selectedTopics.length === 0 || state.selectedTopics.includes(q.topic))
+ *   → selectedTopics が空配列のとき length===0 が true になり、
+ *     全問題が activeQuestions に入ってしまっていた
+ *   → 初回（全未選択）でも selectedCount が全問数を表示していた
+ *
+ * 新コード（修正済み）:
+ *   selectedTopics が空なら何も選ばれていない → 0問を返す
+ *   selectedTopics に含まれるトピックの問題だけ返す
+ */
 function buildActiveQuestions() {
+  if (state.selectedTopics.length === 0) {
+    // TOPICが1つも選択されていない → 出題対象なし
+    state.activeQuestions = [];
+    return;
+  }
   state.activeQuestions = state.allQuestions.filter(q =>
-    (state.selectedTopics.length === 0 || state.selectedTopics.includes(q.topic)) &&
-    matchesDifficulty(q)
+    state.selectedTopics.includes(q.topic) && matchesDifficulty(q)
   );
 }
 
